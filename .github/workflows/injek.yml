@@ -1,0 +1,67 @@
+name: Inject Ads to HTML
+
+on:
+  workflow_dispatch: # Bisa dijalankan manual kapan saja via tombol Run workflow
+
+permissions:
+  contents: write
+
+jobs:
+  inject:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Jalankan Skrip Injeksi Iklan Python
+        run: |
+          python3 - << 'EOF'
+          import os
+
+          ad_script = """
+          <script>
+            atOptions = {
+              'key' : 'f9e40eb3b3cd05f1038aac7b36b33ad2',
+              'format' : 'iframe',
+              'height' : 90,
+              'width' : 728,
+              'params' : {}
+            };
+          </script>
+          <script src="https://bicea.org/22/f9e40eb3b3cd05f1038aac7b36b33ad2"></script>
+          """
+
+          count = 0
+          for root, dirs, files in os.walk("."):
+              # Lewati folder sistem seperti .git, .github, atau shuriken source utama
+              if ".github" in root or ".git" in root or "shuriken/" in root:
+                  continue
+              for file in files:
+                  if file.endswith(".html"):
+                      file_path = os.path.join(root, file)
+                      with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                          content = f.read()
+                      
+                      # Cek agar tidak ter-inject dua kali di file yang sama
+                      if "f9e40eb3b3cd05f1038aac7b36b33ad2" in content:
+                          continue
+                      
+                      if "</body>" in content:
+                          new_content = content.replace("</body>", f"\n{ad_script}\n</body>")
+                      else:
+                          new_content = content + f"\n{ad_script}\n"
+                      
+                      with open(file_path, "w", encoding="utf-8") as f:
+                          f.write(new_content)
+                      count += 1
+                      
+          print(f"Berhasil menyisipkan iklan ke {count} file HTML.")
+          EOF
+
+      - name: Commit dan Push Perubahan
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "📢 Inject ads to all HTML files" || echo "Tidak ada perubahan"
+          git push
