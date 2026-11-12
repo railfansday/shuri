@@ -1,0 +1,35 @@
+name: Extract Shuriken ZIP
+
+on:
+  workflow_dispatch: # Jalankan manual lewat tombol "Run workflow" di tab Actions
+  push:
+    paths:
+      - 'shuriken-7.0.49.zip' # Otomatis jalan jika ada update pada file ini
+
+permissions:
+  contents: write
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Extract shuriken-7.0.49.zip
+        run: |
+          if [ -f "shuriken-7.0.49.zip" ]; then
+            echo "Mengekstrak shuriken-7.0.49.zip..."
+            unzip -o "shuriken-7.0.49.zip" -d .
+            rm -f "shuriken-7.0.49.zip" # Menghapus file zip setelah diekstrak
+          else
+            echo "File shuriken-7.0.49.zip tidak ditemukan."
+          fi
+
+      - name: Commit and Push Extracted Files
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "📦 Extract shuriken-7.0.49.zip" || echo "Tidak ada file baru untuk di-commit"
+          git push
