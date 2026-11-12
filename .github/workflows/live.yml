@@ -1,0 +1,47 @@
+name: Run Shuriken Omakase & Deploy HTML
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-omakase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: sqlite3, pdo_sqlite, curl, mbstring, gd, xml, zip
+
+      - name: Jalankan Shuriken Omakase
+        working-directory: ./shuriken
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          php shuriken omakase
+
+      - name: Ekstrak HTML Terbaru ke Root (Main)
+        run: |
+          # Mencari file html-*.zip terbaru di dalam shuriken/omakase
+          LATEST_HTML_ZIP=$(find shuriken/omakase -name "html-*.zip" -printf "%T@ %p\n" | sort -n | tail -1 | cut -d' ' -f2-)
+          
+          if [ -n "$LATEST_HTML_ZIP" ] && [ -f "$LATEST_HTML_ZIP" ]; then
+            echo "Mengekstrak $LATEST_HTML_ZIP ke root..."
+            unzip -o "$LATEST_HTML_ZIP" -d .
+          else
+            echo "File html-*.zip tidak ditemukan."
+          fi
+
+      - name: Simpan Hasil ke Branch Main
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "🚀 Update & Extract HTML Live" || echo "Tidak ada perubahan"
+          git push
