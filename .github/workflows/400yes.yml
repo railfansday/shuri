@@ -1,0 +1,112 @@
+name: Merge Articles into Long Pages (400 per page)
+
+on:
+  workflow_dispatch: # Jalankan manual kapan saja via tab Actions
+
+permissions:
+  contents: write
+
+jobs:
+  merge-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Jalankan Skrip Python Penggabung Konten
+        run: |
+          python3 - << 'EOF'
+          import os
+          import re
+
+          html_files = []
+          # Scan semua file HTML di root
+          for root, dirs, files in os.walk("."):
+              if ".github" in root or ".git" in root or "shuriken" in root:
+                  continue
+              for file in files:
+                  if file.endswith(".html") and file != "index.html" and not file.startswith("page-"):
+                      file_path = os.path.join(root, file)
+                      html_files.append(file_path)
+
+          # Urutkan file agar susunannya konsisten
+          html_files = sorted(html_files)
+          total_articles = len(html_files)
+          print(f"Total file artikel ditemukan: {total_articles}")
+
+          # Bagi menjadi 400 artikel per halaman
+          chunk_size = 400
+          chunks = [html_files[i:i + chunk_size] for i in range(0, total_articles, chunk_size)]
+          total_pages = len(chunks) if chunks else 1
+
+          for idx, chunk in enumerate(chunks):
+              page_num = idx + 1
+              filename = "index.html" if page_num == 1 else f"page-{page_num}.html"
+              
+              combined_content = ""
+              for file_path in chunk:
+                  try:
+                      with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                          content = f.read()
+                          
+                          # Ambil bagian dalam tag <body> jika ada, atau ambil semuanya
+                          body_match = re.search(r'<body[^>]*>(.*?)</body>', content, re.DOTALL | re.IGNORECASE)
+                          if body_match:
+                              body_content = body_match.group(1)
+                          else:
+                              body_content = content
+                              
+                          # Bungkus setiap artikel dengan pembatas agar rapi saat digabung
+                          combined_content += f'<div class="article-block" style="margin-bottom: 60px; border-bottom: 3px solid #eee; padding-bottom: 40px;">\n{body_content}\n</div>\n'
+                  except Exception as e:
+                      print(f"Gagal membaca {file_path}: {e}")
+
+              # Tombol navigasi halaman (Pagination)
+              pagination_html = '<div style="margin: 50px 0; text-align: center; font-size: 18px;">'
+              if page_num > 1:
+                  prev_file = "index.html" if page_num == 2 else f"page-{page_num-1}.html"
+                  pagination_html += f'<a href="{prev_file}" style="margin-right: 20px; padding: 10px 20px; background: #0066cc; color: white; text-decoration: none; border-radius: 5px;">&laquo; Sebelumnya</a>'
+              
+              pagination_html += f'<span>Halaman {page_num} dari {total_pages}</span>'
+              
+              if page_num < total_pages:
+                  next_file = f"page-{page_num+1}.html"
+                  pagination_html += f'<a href="{next_file}" style="margin-left: 20px; padding: 10px 20px; background: #0066cc; color: white; text-decoration: none; border-radius: 5px;">Berikutnya &raquo;</a>'
+              
+              pagination_html += '</div>'
+
+              # Susun halaman HTML gabungan lengkap dengan styling agar enak dibaca
+              page_html = f"""<!DOCTYPE html>
+              <html lang="id">
+              <head>
+                  <meta charset="UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <title>Kumpulan Artikel Lengkap - Halaman {page_num}</title>
+                  <style>
+                      body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #333; background: #f9f9f9; }}
+                      .container {{ background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }}
+                      img {{ max-width: 100%; height: auto; }}
+                  </style>
+              </head>
+              <body>
+                  <div class="container">
+                      <h1 style="text-align: center; margin-bottom: 40px;">Kumpulan Artikel (Halaman {page_num})</h1>
+                      {combined_content}
+                      {pagination_html}
+                  </div>
+              </body>
+              </html>
+              """
+              
+              with open(filename, "w", encoding="utf-8") as f:
+                  f.write(page_html)
+              print(f"Berhasil merangkum {len(chunk)} artikel ke dalam {filename}.")
+          EOF
+
+      - name: Commit dan Push Halaman Gabungan
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html page-*.html
+          git commit -m "📚 Merge full content articles into paginated long pages (400 per page)" || echo "Tidak ada perubahan"
+          git push
