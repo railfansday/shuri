@@ -1,0 +1,38 @@
+name: Run Shuriken Omakase
+
+on:
+  workflow_dispatch: # Muncul tombol "Run workflow" untuk dijalankan manual kapan saja
+  # schedule:
+  #   - cron: '0 */6 * * *' # Hapus tanda # jika ingin otomatis jalan tiap 6 jam
+
+permissions:
+  contents: write
+
+jobs:
+  run-omakase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: sqlite3, pdo_sqlite, curl, mbstring, gd, xml, zip
+
+      - name: Jalankan Perintah Shuriken Omakase
+        working-directory: ./shuriken # Masuk ke folder shuriken (pengganti cd laragon\www)
+        env:
+          # Jika butuh API Key (misal Gemini/OpenAI), simpan di Settings > Secrets > Actions
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          php shuriken omakase
+
+      - name: Simpan Hasil Database / Output ke Repo
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "🤖 Update hasil shuriken omakase" || echo "Tidak ada perubahan data"
+          git push
