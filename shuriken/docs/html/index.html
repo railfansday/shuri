@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dokumentasi [Shuriken 7](https://dojo.cx/shuriken) — Shuriken</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:#222;background:#f5f5f5;line-height:1.7}
+a{color:#c0392b;text-decoration:none}
+a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:240px;flex-shrink:0;background:#1e1e2e;padding:1rem 0;overflow-y:auto;position:sticky;top:0;height:100vh}
+.sidebar-logo{padding:.75rem 1.2rem 1rem;font-size:1.1rem;font-weight:700;color:#fff;border-bottom:1px solid #333}
+.sidebar-logo span{color:#e74c3c}
+.nav-section{padding:.7rem 1.2rem .2rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666}
+.nav-link{display:block;padding:.35rem 1.2rem;color:#bbb;font-size:.88rem;transition:background .15s,color .15s}
+.nav-link:hover{background:#2a2a3e;color:#fff;text-decoration:none}
+.nav-link.active{color:#e74c3c;background:#2a2a3e;font-weight:600}
+.content{flex:1;min-width:0;padding:2.5rem 3rem;max-width:860px}
+h1{font-size:1.8rem;margin-bottom:1.2rem;padding-bottom:.5rem;border-bottom:2px solid #e74c3c;color:#111}
+h2{font-size:1.25rem;margin:2rem 0 .6rem;color:#111}
+h3{font-size:1rem;margin:1.5rem 0 .4rem;color:#333}
+p{margin:.6rem 0}
+ul,ol{margin:.5rem 0 .5rem 1.5rem}
+li{margin:.25rem 0}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.9rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+th{background:#1e1e2e;color:#fff;padding:.5rem .8rem;text-align:left}
+td{padding:.45rem .8rem;border-bottom:1px solid #e0e0e0}
+tr:hover td{background:#fafafa}
+pre{background:#1e1e2e;color:#f8f8f2;padding:1rem 1.2rem;border-radius:6px;overflow-x:auto;margin:1rem 0;font-size:.85rem;line-height:1.5}
+code{font-family:'SFMono-Regular',Consolas,monospace;font-size:.88em}
+p code,li code,td code{background:#eee;padding:.1em .35em;border-radius:3px;color:#c0392b}
+blockquote{border-left:3px solid #e74c3c;padding:.5rem 1rem;color:#555;background:#fff8f8;margin:1rem 0}
+hr{border:none;border-top:1px solid #ddd;margin:1.5rem 0}
+img{max-width:100%;height:auto;border-radius:6px;border:1px solid #e0e0e0;margin:.5rem 0}
+.subscribe-box{margin-top:3rem;padding:1.5rem;background:#fff8f8;border:1px solid #f5c6c6;border-radius:8px;text-align:center}
+.subscribe-label{font-size:.9rem;font-weight:600;color:#c0392b;margin-bottom:.75rem}
+.footer{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #e0e0e0;font-size:.82rem;color:#999}
+.footer a{color:#999}
+.footer a:hover{color:#c0392b}
+.topbar{display:none;align-items:center;gap:.75rem;background:#1e1e2e;padding:.75rem 1rem;position:sticky;top:0;z-index:100}
+.topbar-logo{font-size:1rem;font-weight:700;color:#fff}
+.topbar-logo span{color:#e74c3c}
+.burger{background:none;border:none;cursor:pointer;padding:.25rem;display:flex;flex-direction:column;gap:5px}
+.burger span{display:block;width:22px;height:2px;background:#bbb;border-radius:2px;transition:background .2s}
+.burger:hover span{background:#fff}
+.drawer{position:fixed;inset:0;z-index:200;display:none}
+.drawer.open{display:block}
+.drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.drawer-panel{position:absolute;left:0;top:0;bottom:0;width:260px;background:#1e1e2e;overflow-y:auto;padding:1rem 0;transform:translateX(-100%);transition:transform .25s ease}
+.drawer.open .drawer-panel{transform:translateX(0)}
+.drawer-close{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1.2rem 1rem;border-bottom:1px solid #333;margin-bottom:.25rem}
+.drawer-close .logo{font-size:1rem;font-weight:700;color:#fff}
+.drawer-close .logo span{color:#e74c3c}
+.drawer-close button{background:none;border:none;color:#888;font-size:1.3rem;cursor:pointer;line-height:1}
+.drawer-close button:hover{color:#fff}
+@media(max-width:700px){.sidebar{display:none}.content{padding:1.5rem}.topbar{display:flex}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="burger" onclick="openDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-logo">⚡ <span>Shuriken</span></div>
+</div>
+<div class="drawer" id="drawer" onclick="handleDrawerClick(event)">
+  <div class="drawer-backdrop"></div>
+  <div class="drawer-panel">
+    <div class="drawer-close">
+      <div class="logo">⚡ <span>Shuriken</span></div>
+      <button onclick="closeDrawer()" aria-label="Tutup">✕</button>
+    </div>
+    <a href="index.html" class="nav-link active">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+  </div>
+</div>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-logo">⚡ <span>Shuriken</span></div>
+  <a href="index.html" class="nav-link active">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+</aside>
+<main class="content">
+<h1><a id="content-dokumentasi-shuriken-7" href="#content-dokumentasi-shuriken-7" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Dokumentasi <a href="https://dojo.cx/shuriken">Shuriken 7</a></h1>
+<p>Shuriken adalah CLI tool untuk scraping gambar, generate konten blog dengan AI, dan export ke berbagai platform.</p>
+<hr />
+<blockquote>
+<p>💰 <strong>Ingin monetize traffic dari site hasil Shuriken?</strong>
+Gunakan <a href="https://beta.publishers.adsterra.com/referral/hdKsY5N1yr"><strong>Adsterra</strong></a> — ad network yang cocok untuk site baru, tanpa minimum traffic. Tersedia banner, native ads, popunder, dan social bar. Lihat cara pasangnya di <a href="export-platforms.html#content-ads--tracking">Ads &amp; Tracking</a>.</p>
+</blockquote>
+<hr />
+<h2><a id="content-daftar-isi" href="#content-daftar-isi" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Daftar Isi</h2>
+<h3><a id="content-memulai" href="#content-memulai" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Memulai</h3>
+<ul>
+<li><a href="installation.html">Instalasi</a> — Requirements, install, setup awal</li>
+<li><a href="quick-start.html">Quick Start</a> — Workflow dari nol sampai export</li>
+</ul>
+<h3><a id="content-ai--providers" href="#content-ai--providers" class="heading-permalink" aria-hidden="true" title="Permalink"></a>AI &amp; Providers</h3>
+<ul>
+<li><a href="ai-providers.html">AI Providers</a> — Setup 19+ provider AI (OpenAI, Gemini, Claude, dll)</li>
+<li><a href="ai-cost-guide.html">Panduan Biaya AI</a> — Rekomendasi provider berdasarkan budget</li>
+</ul>
+<h3><a id="content-export" href="#content-export" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Export</h3>
+<ul>
+<li><a href="export-platforms.html">Platform Export</a> — WordPress, Blogger, Hugo, CSV, Native, HTML</li>
+<li><a href="html-themes.html">HTML Themes</a> — 45 tema + opsi random</li>
+</ul>
+<h3><a id="content-monetisasi" href="#content-monetisasi" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Monetisasi</h3>
+<ul>
+<li><a href="monetization.html">Panduan Adsterra &amp; Integrasi Iklan</a> — Trik memasang slot ads dan optimasi revenue</li>
+</ul>
+<h3><a id="content-referensi-command" href="#content-referensi-command" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Referensi Command</h3>
+<ul>
+<li><a href="commands/image-scrape.html">image:scrape</a> — Scraping gambar &amp; generate konten</li>
+<li><a href="commands/image-export.html">image:export</a> — Export ke berbagai platform</li>
+<li><a href="commands/clear-data.html">clear:data</a> — Bersihkan database dan export</li>
+<li><a href="commands/token.html">token</a> — Kelola API token per provider</li>
+<li><a href="commands/prompt.html">prompt</a> — Kelola custom prompt template</li>
+<li><a href="commands/site.html">site</a> — Kelola publish destination</li>
+<li><a href="commands/post-publish.html">post:publish</a> — Publish post ke WordPress via API</li>
+<li><a href="commands/site-deploy.html">site:deploy</a> — Deploy HTML ke Netlify / Cloudflare Pages</li>
+<li><a href="commands/mcp-serve.html">mcp:serve</a> — MCP server untuk integrasi Claude Code &amp; Gemini CLI</li>
+</ul>
+<h3><a id="content-case-study" href="#content-case-study" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Case Study</h3>
+<ul>
+<li><a href="case-study-bisnis-lokal.html">Promosi Bisnis Lokal (Agen Umroh)</a> — Keyword lokal, template CTA, topical authority</li>
+<li><a href="case-study-resep-adsense.html">Auto-Blog Resep + AdSense (ARSAE)</a> — Blog resep masak, monetize AdSense tanpa daftar site</li>
+<li><a href="case-study-affiliate-shopee.html">Affiliate Shopee via Indoleads</a> — Konten produk + deeplink affiliate otomatis</li>
+<li><a href="case-study-nickname-tier1.html">Nickname Tier 1 + Adsterra</a> — Niche nickname multi-bahasa, traffic tier 1</li>
+<li><a href="case-study-map-of.html">Niche &quot;Map Of&quot; Tier 1</a> — Konten peta/lokasi, evergreen, traffic organik stabil</li>
+<li><a href="case-study-pfp.html">Niche PFP (Profile Picture)</a> — Gallery gambar tanpa AI, template kustom, Adsterra</li>
+<li><a href="case-study-printable.html">Printable Worksheets</a> — Aggregator edu worksheet, trafik Bing Tier 1, AdSense/Adsterra</li>
+</ul>
+<h3><a id="content-lainnya" href="#content-lainnya" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Lainnya</h3>
+<ul>
+<li><a href="custom-templates.html">Custom Templates</a> — Buat template konten sendiri tanpa ubah kode inti</li>
+<li><a href="faq.html">FAQ &amp; Tips</a> — Solusi umum, tips scraping, dan pertanyaan sering muncul</li>
+<li><a href="configuration.html">Konfigurasi Lengkap</a> — config/ai.php, shuriken.php, export.php</li>
+</ul>
+<hr />
+<h2><a id="content-ringkasan-fitur" href="#content-ringkasan-fitur" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Ringkasan Fitur</h2>
+<table>
+<thead>
+<tr>
+<th>Fitur</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sumber scraping</td>
+<td>Bing Images</td>
+</tr>
+<tr>
+<td>Custom images</td>
+<td><code>--images_txt</code> — pakai daftar URL sendiri dari <code>images.txt</code></td>
+</tr>
+<tr>
+<td>AI Provider</td>
+<td>19+ provider (15 API + 4 lokal/CLI) + custom OpenAI-compatible</td>
+</tr>
+<tr>
+<td>Template prompt</td>
+<td>10 built-in (image, recipe, list, review, faq, tutorial, comparison, news, roundup, guide) + custom</td>
+</tr>
+<tr>
+<td>Custom content template</td>
+<td><code>--template=nama</code> — folder <code>templates/nama/</code> dengan <code>content.blade.php</code> &amp; <code>title.blade.php</code></td>
+</tr>
+<tr>
+<td>Deploy target</td>
+<td>Netlify, Cloudflare Pages, Vercel, Surge, GitHub Pages</td>
+</tr>
+<tr>
+<td>Format export</td>
+<td>WordPress XML, Blogger XML, Hugo ZIP, CSV, SQLite, HTML ZIP</td>
+</tr>
+<tr>
+<td>HTML Tema</td>
+<td>45 tema (11 keluarga × 4 variant + default)</td>
+</tr>
+<tr>
+<td>Spintax</td>
+<td>Ya — variasi teks otomatis <code>{opsi1|opsi2}</code></td>
+</tr>
+<tr>
+<td>Token rotation</td>
+<td>Ya — round-robin untuk rate limit</td>
+</tr>
+</tbody>
+</table>
+<h2><a id="content-perintah-cepat" href="#content-perintah-cepat" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Perintah Cepat</h2>
+<pre><code class="language-bash"># Pipeline otomatis penuh
+php shuriken omakase
+
+# Scrape + AI content
+php shuriken image:scrape --keywords=&quot;resep masak&quot; --ai --provider=deepseek
+
+# Scrape tanpa AI, pakai custom template (misal PFP)
+php shuriken image:scrape --keywords=&quot;anime pfp&quot; --template=pfp
+
+# Scrape pakai gambar dari images.txt (bukan Bing)
+php shuriken image:scrape --keywords=&quot;keyword&quot; --images_txt
+
+# Export ke HTML
+php shuriken image:export --platform=html --theme=five-dark
+
+# Bersihkan semua data
+php shuriken clear:data
+</code></pre>
+
+<div class="subscribe-box">
+  <p class="subscribe-label">📬 Tips & update terbaru dari Internet Marketing Dojo</p>
+  <iframe src="https://imdojo.substack.com/embed" width="480" height="320" style="border:1px solid #EEE;background:white;max-width:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+<div class="footer"><a href="https://dojo.cx/shuriken" target="_blank">Shuriken</a> by <a href="https://imdojo.substack.com" target="_blank">Internet Marketing Dojo</a></div>
+</main>
+</div>
+<script>
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.body.style.overflow='hidden'}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.body.style.overflow=''}
+function handleDrawerClick(e){if(e.target.classList.contains('drawer-backdrop'))closeDrawer()}
+document.querySelectorAll('#drawer .nav-link').forEach(function(a){a.addEventListener('click',closeDrawer)})
+</script>
+<script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="08b4d506-ee5f-49d8-ab6a-b3d3196bc5c0";window.$crisp.push(["config","position:reverse",[false]]);(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>
+</body>
+</html>

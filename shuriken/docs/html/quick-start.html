@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quick Start — Shuriken</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:#222;background:#f5f5f5;line-height:1.7}
+a{color:#c0392b;text-decoration:none}
+a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:240px;flex-shrink:0;background:#1e1e2e;padding:1rem 0;overflow-y:auto;position:sticky;top:0;height:100vh}
+.sidebar-logo{padding:.75rem 1.2rem 1rem;font-size:1.1rem;font-weight:700;color:#fff;border-bottom:1px solid #333}
+.sidebar-logo span{color:#e74c3c}
+.nav-section{padding:.7rem 1.2rem .2rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666}
+.nav-link{display:block;padding:.35rem 1.2rem;color:#bbb;font-size:.88rem;transition:background .15s,color .15s}
+.nav-link:hover{background:#2a2a3e;color:#fff;text-decoration:none}
+.nav-link.active{color:#e74c3c;background:#2a2a3e;font-weight:600}
+.content{flex:1;min-width:0;padding:2.5rem 3rem;max-width:860px}
+h1{font-size:1.8rem;margin-bottom:1.2rem;padding-bottom:.5rem;border-bottom:2px solid #e74c3c;color:#111}
+h2{font-size:1.25rem;margin:2rem 0 .6rem;color:#111}
+h3{font-size:1rem;margin:1.5rem 0 .4rem;color:#333}
+p{margin:.6rem 0}
+ul,ol{margin:.5rem 0 .5rem 1.5rem}
+li{margin:.25rem 0}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.9rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+th{background:#1e1e2e;color:#fff;padding:.5rem .8rem;text-align:left}
+td{padding:.45rem .8rem;border-bottom:1px solid #e0e0e0}
+tr:hover td{background:#fafafa}
+pre{background:#1e1e2e;color:#f8f8f2;padding:1rem 1.2rem;border-radius:6px;overflow-x:auto;margin:1rem 0;font-size:.85rem;line-height:1.5}
+code{font-family:'SFMono-Regular',Consolas,monospace;font-size:.88em}
+p code,li code,td code{background:#eee;padding:.1em .35em;border-radius:3px;color:#c0392b}
+blockquote{border-left:3px solid #e74c3c;padding:.5rem 1rem;color:#555;background:#fff8f8;margin:1rem 0}
+hr{border:none;border-top:1px solid #ddd;margin:1.5rem 0}
+img{max-width:100%;height:auto;border-radius:6px;border:1px solid #e0e0e0;margin:.5rem 0}
+.subscribe-box{margin-top:3rem;padding:1.5rem;background:#fff8f8;border:1px solid #f5c6c6;border-radius:8px;text-align:center}
+.subscribe-label{font-size:.9rem;font-weight:600;color:#c0392b;margin-bottom:.75rem}
+.footer{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #e0e0e0;font-size:.82rem;color:#999}
+.footer a{color:#999}
+.footer a:hover{color:#c0392b}
+.topbar{display:none;align-items:center;gap:.75rem;background:#1e1e2e;padding:.75rem 1rem;position:sticky;top:0;z-index:100}
+.topbar-logo{font-size:1rem;font-weight:700;color:#fff}
+.topbar-logo span{color:#e74c3c}
+.burger{background:none;border:none;cursor:pointer;padding:.25rem;display:flex;flex-direction:column;gap:5px}
+.burger span{display:block;width:22px;height:2px;background:#bbb;border-radius:2px;transition:background .2s}
+.burger:hover span{background:#fff}
+.drawer{position:fixed;inset:0;z-index:200;display:none}
+.drawer.open{display:block}
+.drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.drawer-panel{position:absolute;left:0;top:0;bottom:0;width:260px;background:#1e1e2e;overflow-y:auto;padding:1rem 0;transform:translateX(-100%);transition:transform .25s ease}
+.drawer.open .drawer-panel{transform:translateX(0)}
+.drawer-close{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1.2rem 1rem;border-bottom:1px solid #333;margin-bottom:.25rem}
+.drawer-close .logo{font-size:1rem;font-weight:700;color:#fff}
+.drawer-close .logo span{color:#e74c3c}
+.drawer-close button{background:none;border:none;color:#888;font-size:1.3rem;cursor:pointer;line-height:1}
+.drawer-close button:hover{color:#fff}
+@media(max-width:700px){.sidebar{display:none}.content{padding:1.5rem}.topbar{display:flex}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="burger" onclick="openDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-logo">⚡ <span>Shuriken</span></div>
+</div>
+<div class="drawer" id="drawer" onclick="handleDrawerClick(event)">
+  <div class="drawer-backdrop"></div>
+  <div class="drawer-panel">
+    <div class="drawer-close">
+      <div class="logo">⚡ <span>Shuriken</span></div>
+      <button onclick="closeDrawer()" aria-label="Tutup">✕</button>
+    </div>
+    <a href="index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link active" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+  </div>
+</div>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-logo">⚡ <span>Shuriken</span></div>
+  <a href="index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link active" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+</aside>
+<main class="content">
+<h1><a id="content-quick-start" href="#content-quick-start" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Quick Start</h1>
+<p>Panduan cepat dari nol sampai export konten.</p>
+<h2><a id="content-workflow-otomatis-paling-mudah" href="#content-workflow-otomatis-paling-mudah" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Workflow Otomatis (Paling Mudah)</h2>
+<pre><code class="language-bash">php shuriken omakase
+</code></pre>
+<p><code>omakase</code> menjalankan pipeline penuh secara otomatis: scrape dari Google Trends → generate konten → export ke semua 6 platform. Tidak butuh konfigurasi apapun.</p>
+<hr />
+<h2><a id="content-workflow-manual" href="#content-workflow-manual" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Workflow Manual</h2>
+<h3><a id="content-langkah-1-scrape-konten" href="#content-langkah-1-scrape-konten" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Langkah 1: Scrape Konten</h3>
+<p>Token AI <strong>tidak diperlukan</strong> — scrape dan export berjalan tanpa AI menggunakan template bawaan.</p>
+<p><strong>Dari keyword manual:</strong></p>
+<pre><code class="language-bash">php shuriken image:scrape --keywords=&quot;resep ayam,resep ikan&quot;
+</code></pre>
+<p><strong>Dari file <code>keyword.txt</code>:</strong></p>
+<pre><code class="language-bash">php shuriken image:scrape --keywords_txt
+</code></pre>
+<p><strong>Dari Google Trends (otomatis trending):</strong></p>
+<pre><code class="language-bash">php shuriken image:scrape --trends=id
+</code></pre>
+<p><strong>Dengan AI content generation (opsional):</strong></p>
+<pre><code class="language-bash">php shuriken image:scrape --keywords=&quot;resep masak&quot; --ai --provider=deepseek
+</code></pre>
+<p><strong>Performa tinggi (lebih cepat):</strong></p>
+<pre><code class="language-bash">php shuriken image:scrape --keywords=&quot;resep masak&quot; --concurrency=20 --ai --provider=groq
+</code></pre>
+<blockquote>
+<p>Ingin pakai AI? Setup token dulu:</p>
+<pre><code class="language-bash">php shuriken token add deepseek sk-...
+php shuriken token add groq gsk_...
+</code></pre>
+<p>Atau gunakan Ollama (gratis, lokal) tanpa token. Lihat <a href="ai-cost-guide.html">Panduan Biaya AI</a>.</p>
+</blockquote>
+<hr />
+<h3><a id="content-langkah-2-export" href="#content-langkah-2-export" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Langkah 2: Export</h3>
+<p><strong>Export ke WordPress:</strong></p>
+<pre><code class="language-bash">php shuriken image:export --platform=wordpress
+</code></pre>
+<p><strong>Export ke HTML dengan tema:</strong></p>
+<pre><code class="language-bash">php shuriken image:export --platform=html --theme=five-dark --site_name=&quot;Blog Resep&quot;
+</code></pre>
+<p><strong>Export ke semua platform sekaligus:</strong></p>
+<pre><code class="language-bash">for platform in wordpress blogger hugo csv native html; do
+    php shuriken image:export --platform=$platform
+done
+</code></pre>
+<p>Hasil export tersimpan di folder <code>exports/</code>.</p>
+<hr />
+<h2><a id="content-contoh-lengkap-blog-resep-masakan" href="#content-contoh-lengkap-blog-resep-masakan" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Contoh Lengkap: Blog Resep Masakan</h2>
+<pre><code class="language-bash"># 1. Scrape 50 keyword trending masakan Indonesia dengan AI
+php shuriken image:scrape \
+    --trends=id \
+    --max=50 \
+    --ai \
+    --provider=deepseek \
+    --prompt=recipe \
+    --concurrency=10
+
+# 2. Export ke WordPress
+php shuriken image:export \
+    --platform=wordpress \
+    --category=&quot;Resep Masakan&quot; \
+    --start=2024-01-01
+
+# 3. Export ke HTML dengan tema masonry gelap
+php shuriken image:export \
+    --platform=html \
+    --theme=five-dark \
+    --site_name=&quot;Resep Nusantara&quot; \
+    --description=&quot;Kumpulan resep masakan Indonesia&quot;
+
+# 4. Bersihkan untuk batch berikutnya
+php shuriken clear:data
+</code></pre>
+<hr />
+<h2><a id="content-contoh-produksi-massal-dengan-biaya-minimum" href="#content-contoh-produksi-massal-dengan-biaya-minimum" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Contoh: Produksi Massal dengan Biaya Minimum</h2>
+<pre><code class="language-bash"># Pakai Groq (gratis, cepat)
+php shuriken image:scrape \
+    --trends=id \
+    --max=200 \
+    --ai \
+    --provider=groq \
+    --concurrency=20 \
+    --memory_db
+
+php shuriken image:export --platform=wordpress --chunk=1000
+</code></pre>
+<p>Lihat <a href="ai-cost-guide.html">Panduan Biaya AI</a> untuk strategi lengkap.</p>
+<hr />
+<h2><a id="content-publish-langsung-via-api" href="#content-publish-langsung-via-api" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Publish Langsung via API</h2>
+<p>Alternatif dari export file — publish langsung ke WordPress atau deploy ke Netlify/Cloudflare Pages.</p>
+<h3><a id="content-setup-site-sekali-saja" href="#content-setup-site-sekali-saja" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Setup Site (Sekali Saja)</h3>
+<pre><code class="language-bash"># WordPress
+php shuriken site add myblog wordpress https://myblog.com admin &quot;app-password&quot;
+
+# Netlify
+php shuriken site add mysite netlify {site_id} {api_token}
+
+# Cloudflare Pages
+php shuriken site add mysite cloudflare-pages {account_id} {project_name} {api_token}
+
+# Cek koneksi
+php shuriken site test myblog
+</code></pre>
+<h3><a id="content-publish-posts-ke-wordpress" href="#content-publish-posts-ke-wordpress" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Publish Posts ke WordPress</h3>
+<pre><code class="language-bash">php shuriken post:publish --site=myblog
+</code></pre>
+<p>Filter opsional:</p>
+<pre><code class="language-bash">php shuriken post:publish --site=myblog --limit=100 --start=2024-01-01 --end=2024-12-31
+</code></pre>
+<h3><a id="content-deploy-html-ke-netlify--cloudflare-pages" href="#content-deploy-html-ke-netlify--cloudflare-pages" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Deploy HTML ke Netlify / Cloudflare Pages</h3>
+<pre><code class="language-bash"># Deploy dari ZIP yang sudah ada
+php shuriken site:deploy --site=mysite
+
+# Export HTML dulu lalu langsung deploy
+php shuriken site:deploy --site=mysite --theme=five-dark
+</code></pre>
+<p>Lihat referensi lengkap: <a href="commands/site.html">site</a> · <a href="commands/post-publish.html">post:publish</a> · <a href="commands/site-deploy.html">site:deploy</a></p>
+<hr />
+<h2><a id="content-hasil-export" href="#content-hasil-export" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Hasil Export</h2>
+<pre><code>exports/
+├── wordpress-1.xml    ← Import ke WordPress via Tools &gt; Import
+├── blogger-1.xml      ← Import ke Blogger via Setelan &gt; Kelola Blog
+├── hugo-1.zip         ← Extract ke folder content/ Hugo
+├── csv-1.csv          ← Buka di Excel / Google Sheets
+├── abc12.sqlite       ← Database SQLite lengkap
+└── html-1.zip         ← Unzip → website statis siap upload
+</code></pre>
+
+<div class="subscribe-box">
+  <p class="subscribe-label">📬 Tips & update terbaru dari Internet Marketing Dojo</p>
+  <iframe src="https://imdojo.substack.com/embed" width="480" height="320" style="border:1px solid #EEE;background:white;max-width:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+<div class="footer"><a href="https://dojo.cx/shuriken" target="_blank">Shuriken</a> by <a href="https://imdojo.substack.com" target="_blank">Internet Marketing Dojo</a></div>
+</main>
+</div>
+<script>
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.body.style.overflow='hidden'}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.body.style.overflow=''}
+function handleDrawerClick(e){if(e.target.classList.contains('drawer-backdrop'))closeDrawer()}
+document.querySelectorAll('#drawer .nav-link').forEach(function(a){a.addEventListener('click',closeDrawer)})
+</script>
+<script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="08b4d506-ee5f-49d8-ab6a-b3d3196bc5c0";window.$crisp.push(["config","position:reverse",[false]]);(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>
+</body>
+</html>

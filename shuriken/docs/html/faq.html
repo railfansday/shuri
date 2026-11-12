@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fitur Tersembunyi & Perintah Ekstra — Shuriken</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:#222;background:#f5f5f5;line-height:1.7}
+a{color:#c0392b;text-decoration:none}
+a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:240px;flex-shrink:0;background:#1e1e2e;padding:1rem 0;overflow-y:auto;position:sticky;top:0;height:100vh}
+.sidebar-logo{padding:.75rem 1.2rem 1rem;font-size:1.1rem;font-weight:700;color:#fff;border-bottom:1px solid #333}
+.sidebar-logo span{color:#e74c3c}
+.nav-section{padding:.7rem 1.2rem .2rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666}
+.nav-link{display:block;padding:.35rem 1.2rem;color:#bbb;font-size:.88rem;transition:background .15s,color .15s}
+.nav-link:hover{background:#2a2a3e;color:#fff;text-decoration:none}
+.nav-link.active{color:#e74c3c;background:#2a2a3e;font-weight:600}
+.content{flex:1;min-width:0;padding:2.5rem 3rem;max-width:860px}
+h1{font-size:1.8rem;margin-bottom:1.2rem;padding-bottom:.5rem;border-bottom:2px solid #e74c3c;color:#111}
+h2{font-size:1.25rem;margin:2rem 0 .6rem;color:#111}
+h3{font-size:1rem;margin:1.5rem 0 .4rem;color:#333}
+p{margin:.6rem 0}
+ul,ol{margin:.5rem 0 .5rem 1.5rem}
+li{margin:.25rem 0}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.9rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+th{background:#1e1e2e;color:#fff;padding:.5rem .8rem;text-align:left}
+td{padding:.45rem .8rem;border-bottom:1px solid #e0e0e0}
+tr:hover td{background:#fafafa}
+pre{background:#1e1e2e;color:#f8f8f2;padding:1rem 1.2rem;border-radius:6px;overflow-x:auto;margin:1rem 0;font-size:.85rem;line-height:1.5}
+code{font-family:'SFMono-Regular',Consolas,monospace;font-size:.88em}
+p code,li code,td code{background:#eee;padding:.1em .35em;border-radius:3px;color:#c0392b}
+blockquote{border-left:3px solid #e74c3c;padding:.5rem 1rem;color:#555;background:#fff8f8;margin:1rem 0}
+hr{border:none;border-top:1px solid #ddd;margin:1.5rem 0}
+img{max-width:100%;height:auto;border-radius:6px;border:1px solid #e0e0e0;margin:.5rem 0}
+.subscribe-box{margin-top:3rem;padding:1.5rem;background:#fff8f8;border:1px solid #f5c6c6;border-radius:8px;text-align:center}
+.subscribe-label{font-size:.9rem;font-weight:600;color:#c0392b;margin-bottom:.75rem}
+.footer{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #e0e0e0;font-size:.82rem;color:#999}
+.footer a{color:#999}
+.footer a:hover{color:#c0392b}
+.topbar{display:none;align-items:center;gap:.75rem;background:#1e1e2e;padding:.75rem 1rem;position:sticky;top:0;z-index:100}
+.topbar-logo{font-size:1rem;font-weight:700;color:#fff}
+.topbar-logo span{color:#e74c3c}
+.burger{background:none;border:none;cursor:pointer;padding:.25rem;display:flex;flex-direction:column;gap:5px}
+.burger span{display:block;width:22px;height:2px;background:#bbb;border-radius:2px;transition:background .2s}
+.burger:hover span{background:#fff}
+.drawer{position:fixed;inset:0;z-index:200;display:none}
+.drawer.open{display:block}
+.drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.drawer-panel{position:absolute;left:0;top:0;bottom:0;width:260px;background:#1e1e2e;overflow-y:auto;padding:1rem 0;transform:translateX(-100%);transition:transform .25s ease}
+.drawer.open .drawer-panel{transform:translateX(0)}
+.drawer-close{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1.2rem 1rem;border-bottom:1px solid #333;margin-bottom:.25rem}
+.drawer-close .logo{font-size:1rem;font-weight:700;color:#fff}
+.drawer-close .logo span{color:#e74c3c}
+.drawer-close button{background:none;border:none;color:#888;font-size:1.3rem;cursor:pointer;line-height:1}
+.drawer-close button:hover{color:#fff}
+@media(max-width:700px){.sidebar{display:none}.content{padding:1.5rem}.topbar{display:flex}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="burger" onclick="openDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-logo">⚡ <span>Shuriken</span></div>
+</div>
+<div class="drawer" id="drawer" onclick="handleDrawerClick(event)">
+  <div class="drawer-backdrop"></div>
+  <div class="drawer-panel">
+    <div class="drawer-close">
+      <div class="logo">⚡ <span>Shuriken</span></div>
+      <button onclick="closeDrawer()" aria-label="Tutup">✕</button>
+    </div>
+    <a href="index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link active" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+  </div>
+</div>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-logo">⚡ <span>Shuriken</span></div>
+  <a href="index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link active" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+</aside>
+<main class="content">
+<h1><a id="content-fitur-tersembunyi--perintah-ekstra" href="#content-fitur-tersembunyi--perintah-ekstra" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Fitur Tersembunyi &amp; Perintah Ekstra</h1>
+<p>Di balik antarmuka yang terlihat <em>simple</em>, faktanya CLI Shuriken menyimpan beberapa instruksi <em>powerful</em> yang siap dimaksimalkan untuk skenario khusus Anda. Beberapa hal di bawah ini mungkin jarang terlihat oleh pengguna standar.</p>
+<hr />
+<h2><a id="content-1-pipeline-instan-dengan-omakase-" href="#content-1-pipeline-instan-dengan-omakase-" class="heading-permalink" aria-hidden="true" title="Permalink"></a>1. Pipeline Instan dengan <code>omakase</code> 🍣</h2>
+<p>Di dunia restoran Jepang, <em>Omakase</em> berarti &quot;Saya serahkan semuanya pada Koki&quot;. Betul sekali, perintah <code>php shuriken omakase</code> adalah tombol ajaib di mana Shuriken akan mengeksekusi operasi otomatis penuh dari A-Z tanpa Anda harus mengetik perintah berkali-kali.</p>
+<p>Perintah ini akan secara mandiri:</p>
+<ol>
+<li>Menarik <code>keywords</code> yang ada dari database (atau Google Trends).</li>
+<li>Mengeksekusi scraping gambar (<code>image:scrape</code>) secara berulang sampai stok kata kunci habis atau menyentuh volume ekstrim.</li>
+<li>Menjalankan <em>expand/broaden keyword</em> organik sehingga <em>niche</em> Anda menyebar dan mencari ekor panjang (long-tail) target sendiri.</li>
+<li>(Opsional) Langsung menyiapkan database yang siap <em>dipanen</em>.</li>
+</ol>
+<p>Jika layar Terminal Anda mendadak banjir progress layaknya di film fiksi ilmiah usai memanggil <code>php shuriken omakase</code>, silakan langsung diseduh kopinya sembari menunggu keajaiban selesai.</p>
+<hr />
+<h1><a id="content-faq--troubleshooting-kendala-umum" href="#content-faq--troubleshooting-kendala-umum" class="heading-permalink" aria-hidden="true" title="Permalink"></a>FAQ &amp; Troubleshooting (Kendala Umum)</h1>
+<h2><a id="content-q1-program-mengalami-error-database-is-locked-sqlite" href="#content-q1-program-mengalami-error-database-is-locked-sqlite" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Q1: Program Mengalami Error <em>&quot;Database is locked&quot;</em> (SQLite)</h2>
+<p><strong>Penyebab:</strong> SQLite adalah database enteng berbasis file (bukan servis Server). Kalau <em>concurrency</em> (proses paralel) diatur terlalu tinggi secara brutal (misal <code>--concurrency=100</code>) sedangkan <em>harddisk/CPU</em> Anda berjalan kewalahan, file database tak akan sanggup menampung antrian save secara kilat.
+<strong>Solusi:</strong></p>
+<ol>
+<li>Hentikan (CTRL+C) proses CLI.</li>
+<li>Turunkan argumen angka: <code>--concurrency=5</code> atau maksimal 10-15 saja jika laptop Anda bukan kelas i9/M3 Max.</li>
+<li>Ketik perintah <code>php shuriken clear:data</code> (Awas ini mereset total seluruh database dari nol).</li>
+</ol>
+<h2><a id="content-q2-hasil-generasi-ai-ngaco--menceramahi-ai-slop" href="#content-q2-hasil-generasi-ai-ngaco--menceramahi-ai-slop" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Q2: Hasil Generasi AI Ngaco / Menceramahi (AI Slop)</h2>
+<p><strong>Keluhan:</strong> &quot;Kenapa tiap prompt hasil generate teksnya selalu dimulai dengan kalimat <em>'Tentu, saya akan membantu Anda membuat artikel ini...'</em> atau <em>'Berikut adalah HTML mentahnya...'</em>? Ini merusak struktur index web saya!&quot;
+<strong>Penyebab:</strong> Masalah kronis dari <em>Large Language Models (LLMs)</em> karena mereka diajari dengan gaya <em>chat-bot</em> sopan.
+<strong>Solusi Shuriken 7:</strong>
+Kabar gembira, di patch terbaru sistem Prompt Template Engine Shuriken 7 (<em>config/prompts.php</em>) kami telah menyuntikkan instruksi khusus <strong>&quot;CRITICAL: Output ONLY raw content&quot;</strong> secara global untuk membunuh fenomena ini! Jika ada AI yang membandel (biasanya model aneh tak dikenal), gantilah kembali provider ke model yang lebih patuh, misal: <strong>Ollama Gemma 4</strong>, <strong>DeepSeek</strong>, atau minimal <strong>OpenAI GPT-4</strong>.</p>
+<h2><a id="content-q3-error-openaifactory-does-not-exist-atau-error-pada-groq--provider-lain" href="#content-q3-error-openaifactory-does-not-exist-atau-error-pada-groq--provider-lain" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Q3: Error <em>&quot;OpenAI::factory() does not exist&quot;</em> atau Error pada Groq / Provider Lain</h2>
+<p><strong>Penyebab:</strong> Versi library <code>openai-php/client</code> yang ada di paket lama tidak kompatibel dengan provider selain OpenAI (Groq, Mistral, dll).
+<strong>Solusi:</strong> Jalankan perintah berikut di folder Shuriken:</p>
+<pre><code class="language-bash">composer update openai-php/client
+</code></pre>
+<p>Ini hanya memperbarui library AI client tanpa menyentuh dependency lainnya.</p>
+<hr />
+<h2><a id="content-q4-banyak-deprecation-notice-saat-composer-install-windowslaragon" href="#content-q4-banyak-deprecation-notice-saat-composer-install-windowslaragon" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Q4: Banyak &quot;Deprecation Notice&quot; saat <code>composer install</code> (Windows/Laragon)</h2>
+<p><strong>Gejala:</strong> Muncul banyak pesan seperti:</p>
+<pre><code>Deprecated: Return type of ... should either be compatible with ...
+Deprecation Notice: Using ${var} in strings is deprecated ...
+</code></pre>
+<p><strong>Penyebab:</strong> Versi Composer yang terinstall di Laragon sudah lama dan tidak kompatibel dengan PHP 8.1+. Ini bukan error dari Shuriken.</p>
+<p><strong>Solusi:</strong> Update Composer ke versi terbaru:</p>
+<pre><code class="language-bash">composer self-update
+</code></pre>
+<p>Setelah update, jalankan ulang <code>composer install</code>. Deprecation notice akan hilang.</p>
+<hr />
+<h2><a id="content-q5-kuota-api-cepat-ludes" href="#content-q5-kuota-api-cepat-ludes" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Q5: Kuota API Cepat Ludes?</h2>
+<p><strong>Solusi:</strong>
+Cukup ketik perintah CLI pendaftaran token sebanyak mungkin dari 1 layanan AI, misalnya:
+<code>php shuriken token add groq token_pertama</code>
+<code>php shuriken token add groq token_kedua_akun_adik</code>
+<code>php shuriken token add groq token_ketiga</code></p>
+<p>Mesin Rotator Internal (<code>load-balancer</code>) dari Shuriken akan menggunakan fitur <em>Round-Robin</em>. Beban panggilan akan dioper layaknya sistem estafet gilir berganti guna menghindari deteksi batas <em>rate limit</em> IP/Akun!</p>
+
+<div class="subscribe-box">
+  <p class="subscribe-label">📬 Tips & update terbaru dari Internet Marketing Dojo</p>
+  <iframe src="https://imdojo.substack.com/embed" width="480" height="320" style="border:1px solid #EEE;background:white;max-width:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+<div class="footer"><a href="https://dojo.cx/shuriken" target="_blank">Shuriken</a> by <a href="https://imdojo.substack.com" target="_blank">Internet Marketing Dojo</a></div>
+</main>
+</div>
+<script>
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.body.style.overflow='hidden'}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.body.style.overflow=''}
+function handleDrawerClick(e){if(e.target.classList.contains('drawer-backdrop'))closeDrawer()}
+document.querySelectorAll('#drawer .nav-link').forEach(function(a){a.addEventListener('click',closeDrawer)})
+</script>
+<script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="08b4d506-ee5f-49d8-ab6a-b3d3196bc5c0";window.$crisp.push(["config","position:reverse",[false]]);(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>
+</body>
+</html>

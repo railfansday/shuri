@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Providers — Shuriken</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:#222;background:#f5f5f5;line-height:1.7}
+a{color:#c0392b;text-decoration:none}
+a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:240px;flex-shrink:0;background:#1e1e2e;padding:1rem 0;overflow-y:auto;position:sticky;top:0;height:100vh}
+.sidebar-logo{padding:.75rem 1.2rem 1rem;font-size:1.1rem;font-weight:700;color:#fff;border-bottom:1px solid #333}
+.sidebar-logo span{color:#e74c3c}
+.nav-section{padding:.7rem 1.2rem .2rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666}
+.nav-link{display:block;padding:.35rem 1.2rem;color:#bbb;font-size:.88rem;transition:background .15s,color .15s}
+.nav-link:hover{background:#2a2a3e;color:#fff;text-decoration:none}
+.nav-link.active{color:#e74c3c;background:#2a2a3e;font-weight:600}
+.content{flex:1;min-width:0;padding:2.5rem 3rem;max-width:860px}
+h1{font-size:1.8rem;margin-bottom:1.2rem;padding-bottom:.5rem;border-bottom:2px solid #e74c3c;color:#111}
+h2{font-size:1.25rem;margin:2rem 0 .6rem;color:#111}
+h3{font-size:1rem;margin:1.5rem 0 .4rem;color:#333}
+p{margin:.6rem 0}
+ul,ol{margin:.5rem 0 .5rem 1.5rem}
+li{margin:.25rem 0}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.9rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+th{background:#1e1e2e;color:#fff;padding:.5rem .8rem;text-align:left}
+td{padding:.45rem .8rem;border-bottom:1px solid #e0e0e0}
+tr:hover td{background:#fafafa}
+pre{background:#1e1e2e;color:#f8f8f2;padding:1rem 1.2rem;border-radius:6px;overflow-x:auto;margin:1rem 0;font-size:.85rem;line-height:1.5}
+code{font-family:'SFMono-Regular',Consolas,monospace;font-size:.88em}
+p code,li code,td code{background:#eee;padding:.1em .35em;border-radius:3px;color:#c0392b}
+blockquote{border-left:3px solid #e74c3c;padding:.5rem 1rem;color:#555;background:#fff8f8;margin:1rem 0}
+hr{border:none;border-top:1px solid #ddd;margin:1.5rem 0}
+img{max-width:100%;height:auto;border-radius:6px;border:1px solid #e0e0e0;margin:.5rem 0}
+.subscribe-box{margin-top:3rem;padding:1.5rem;background:#fff8f8;border:1px solid #f5c6c6;border-radius:8px;text-align:center}
+.subscribe-label{font-size:.9rem;font-weight:600;color:#c0392b;margin-bottom:.75rem}
+.footer{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #e0e0e0;font-size:.82rem;color:#999}
+.footer a{color:#999}
+.footer a:hover{color:#c0392b}
+.topbar{display:none;align-items:center;gap:.75rem;background:#1e1e2e;padding:.75rem 1rem;position:sticky;top:0;z-index:100}
+.topbar-logo{font-size:1rem;font-weight:700;color:#fff}
+.topbar-logo span{color:#e74c3c}
+.burger{background:none;border:none;cursor:pointer;padding:.25rem;display:flex;flex-direction:column;gap:5px}
+.burger span{display:block;width:22px;height:2px;background:#bbb;border-radius:2px;transition:background .2s}
+.burger:hover span{background:#fff}
+.drawer{position:fixed;inset:0;z-index:200;display:none}
+.drawer.open{display:block}
+.drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.drawer-panel{position:absolute;left:0;top:0;bottom:0;width:260px;background:#1e1e2e;overflow-y:auto;padding:1rem 0;transform:translateX(-100%);transition:transform .25s ease}
+.drawer.open .drawer-panel{transform:translateX(0)}
+.drawer-close{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1.2rem 1rem;border-bottom:1px solid #333;margin-bottom:.25rem}
+.drawer-close .logo{font-size:1rem;font-weight:700;color:#fff}
+.drawer-close .logo span{color:#e74c3c}
+.drawer-close button{background:none;border:none;color:#888;font-size:1.3rem;cursor:pointer;line-height:1}
+.drawer-close button:hover{color:#fff}
+@media(max-width:700px){.sidebar{display:none}.content{padding:1.5rem}.topbar{display:flex}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="burger" onclick="openDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-logo">⚡ <span>Shuriken</span></div>
+</div>
+<div class="drawer" id="drawer" onclick="handleDrawerClick(event)">
+  <div class="drawer-backdrop"></div>
+  <div class="drawer-panel">
+    <div class="drawer-close">
+      <div class="logo">⚡ <span>Shuriken</span></div>
+      <button onclick="closeDrawer()" aria-label="Tutup">✕</button>
+    </div>
+    <a href="index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link active" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+  </div>
+</div>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-logo">⚡ <span>Shuriken</span></div>
+  <a href="index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link active" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+</aside>
+<main class="content">
+<h1><a id="content-ai-providers" href="#content-ai-providers" class="heading-permalink" aria-hidden="true" title="Permalink"></a>AI Providers</h1>
+<p>Shuriken mendukung 18 AI provider untuk generate konten blog. Semua provider menggunakan format yang sama — cukup ganti <code>--provider</code> dan kelola token via CLI.</p>
+<blockquote>
+<p><strong>Cara mudah setup token:</strong> Gunakan perintah <a href="commands/token.html"><code>token</code></a> untuk menambah, menghapus, dan test token langsung dari CLI tanpa perlu edit file config.</p>
+<pre><code class="language-bash">php shuriken token add openai sk-proj-...
+php shuriken token test openai
+</code></pre>
+</blockquote>
+<h2><a id="content-daftar-provider" href="#content-daftar-provider" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Daftar Provider</h2>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Flag</th>
+<th>Perlu Token</th>
+<th>Tipe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OpenAI</td>
+<td><code>openai</code></td>
+<td>Ya</td>
+<td>API</td>
+</tr>
+<tr>
+<td>Gemini</td>
+<td><code>gemini</code></td>
+<td>Ya</td>
+<td>API</td>
+</tr>
+<tr>
+<td>Claude</td>
+<td><code>claude</code></td>
+<td>Ya</td>
+<td>API</td>
+</tr>
+<tr>
+<td>DeepSeek</td>
+<td><code>deepseek</code></td>
+<td>Ya</td>
+<td>API (OpenAI-compatible)</td>
+</tr>
+<tr>
+<td>Groq</td>
+<td><code>groq</code></td>
+<td>Ya</td>
+<td>API (OpenAI-compatible)</td>
+</tr>
+<tr>
+<td>OpenRouter</td>
+<td><code>openrouter</code></td>
+<td>Ya</td>
+<td>API (OpenAI-compatible)</td>
+</tr>
+<tr>
+<td>Kimi (Moonshot)</td>
+<td><code>kimi</code></td>
+<td>Ya</td>
+<td>API (OpenAI-compatible)</td>
+</tr>
+<tr>
+<td>Grok (xAI)</td>
+<td><code>grok</code></td>
+<td>Ya</td>
+<td>API (OpenAI-compatible)</td>
+</tr>
+<tr>
+<td>Mistral</td>
+<td><code>mistral</code></td>
+<td>Ya</td>
+<td>API (OpenAI-compatible)</td>
+</tr>
+<tr>
+<td>Together AI</td>
+<td><code>together</code></td>
+<td>Ya</td>
+<td>API (OpenAI-compatible)</td>
+</tr>
+<tr>
+<td>Perplexity</td>
+<td><code>perplexity</code></td>
+<td>Ya</td>
+<td>API (OpenAI-compatible)</td>
+</tr>
+<tr>
+<td>Fireworks AI</td>
+<td><code>fireworks</code></td>
+<td>Ya</td>
+<td>API (OpenAI-compatible)</td>
+</tr>
+<tr>
+<td>Cerebras</td>
+<td><code>cerebras</code></td>
+<td>Ya</td>
+<td>API (OpenAI-compatible)</td>
+</tr>
+<tr>
+<td>SiliconFlow</td>
+<td><code>siliconflow</code></td>
+<td>Ya</td>
+<td>API (OpenAI-compatible)</td>
+</tr>
+<tr>
+<td>Novita AI</td>
+<td><code>novita</code></td>
+<td>Ya</td>
+<td>API (OpenAI-compatible)</td>
+</tr>
+<tr>
+<td>Ollama</td>
+<td><code>ollama</code></td>
+<td>Tidak</td>
+<td>Lokal</td>
+</tr>
+<tr>
+<td>LM Studio</td>
+<td><code>lmstudio</code></td>
+<td>Tidak</td>
+<td>Lokal</td>
+</tr>
+<tr>
+<td>Claude CLI</td>
+<td><code>claude-cli</code></td>
+<td>Tidak</td>
+<td>CLI (subscription)</td>
+</tr>
+<tr>
+<td>Gemini CLI</td>
+<td><code>gemini-cli</code></td>
+<td>Tidak</td>
+<td>CLI (subscription)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2><a id="content-setup-per-provider" href="#content-setup-per-provider" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Setup per Provider</h2>
+<h3><a id="content-openai" href="#content-openai" class="heading-permalink" aria-hidden="true" title="Permalink"></a>OpenAI</h3>
+<pre><code class="language-bash"># 1. Dapatkan API key di: platform.openai.com/api-keys
+# 2. Tambahkan token:
+php shuriken token add openai sk-proj-...
+
+# Gunakan
+php shuriken image:scrape --ai --provider=openai
+php shuriken image:scrape --ai --provider=openai --model=gpt-4o
+</code></pre>
+<p>Model default: <code>gpt-4.1-mini</code></p>
+<hr />
+<h3><a id="content-gemini-google" href="#content-gemini-google" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Gemini (Google)</h3>
+<pre><code class="language-bash"># 1. Dapatkan API key di: aistudio.google.com/app/apikey
+# 2. Tambahkan token:
+php shuriken token add gemini AIzaSy...
+
+# Gunakan
+php shuriken image:scrape --ai --provider=gemini
+</code></pre>
+<p>Model default: <code>gemini-2.5-flash</code></p>
+<hr />
+<h3><a id="content-claude-anthropic" href="#content-claude-anthropic" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Claude (Anthropic)</h3>
+<pre><code class="language-bash"># 1. Dapatkan API key di: console.anthropic.com
+# 2. Tambahkan token:
+php shuriken token add claude sk-ant-...
+
+# Gunakan
+php shuriken image:scrape --ai --provider=claude
+php shuriken image:scrape --ai --provider=claude --model=claude-sonnet-4-6
+</code></pre>
+<p>Model default: <code>claude-haiku-4-5</code></p>
+<hr />
+<h3><a id="content-deepseek" href="#content-deepseek" class="heading-permalink" aria-hidden="true" title="Permalink"></a>DeepSeek</h3>
+<pre><code class="language-bash"># 1. Dapatkan API key di: platform.deepseek.com
+# 2. Tambahkan token:
+php shuriken token add deepseek sk-...
+
+# Gunakan
+php shuriken image:scrape --ai --provider=deepseek
+</code></pre>
+<p>Model default: <code>deepseek-chat</code></p>
+<hr />
+<h3><a id="content-groq" href="#content-groq" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Groq</h3>
+<p>Ada free tier.</p>
+<pre><code class="language-bash"># 1. Dapatkan API key di: console.groq.com
+# 2. Tambahkan token:
+php shuriken token add groq gsk_...
+
+# Gunakan
+php shuriken image:scrape --ai --provider=groq
+</code></pre>
+<p>Model default: <code>llama-3.3-70b-versatile</code></p>
+<hr />
+<h3><a id="content-openrouter" href="#content-openrouter" class="heading-permalink" aria-hidden="true" title="Permalink"></a>OpenRouter</h3>
+<p>Akses 500+ model dengan 1 API key.</p>
+<pre><code class="language-bash"># 1. Dapatkan API key di: openrouter.ai/keys
+# 2. Tambahkan token:
+php shuriken token add openrouter sk-or-...
+
+# Gunakan
+php shuriken image:scrape --ai --provider=openrouter
+php shuriken image:scrape --ai --provider=openrouter --model=anthropic/claude-3-haiku
+</code></pre>
+<p>Model default: <code>google/gemini-2.5-flash</code></p>
+<hr />
+<h3><a id="content-kimi-moonshot-ai" href="#content-kimi-moonshot-ai" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Kimi (Moonshot AI)</h3>
+<pre><code class="language-bash"># 1. Dapatkan API key di: platform.moonshot.cn
+# 2. Tambahkan token:
+php shuriken token add kimi sk-...
+
+# Gunakan
+php shuriken image:scrape --ai --provider=kimi
+</code></pre>
+<p>Model default: <code>moonshot-v1-8k</code></p>
+<hr />
+<h3><a id="content-grok-xai" href="#content-grok-xai" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Grok (xAI)</h3>
+<pre><code class="language-bash"># 1. Dapatkan API key di: console.x.ai
+# 2. Tambahkan token:
+php shuriken token add grok xai-...
+
+# Gunakan
+php shuriken image:scrape --ai --provider=grok
+</code></pre>
+<p>Model default: <code>grok-2-1212</code></p>
+<hr />
+<h3><a id="content-mistral" href="#content-mistral" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Mistral</h3>
+<pre><code class="language-bash"># 1. Dapatkan API key di: console.mistral.ai
+# 2. Tambahkan token:
+php shuriken token add mistral ...
+
+# Gunakan
+php shuriken image:scrape --ai --provider=mistral
+</code></pre>
+<p>Model default: <code>mistral-small-latest</code></p>
+<hr />
+<h3><a id="content-together-ai" href="#content-together-ai" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Together AI</h3>
+<pre><code class="language-bash"># 1. Dapatkan API key di: api.together.xyz
+# 2. Tambahkan token:
+php shuriken token add together ...
+
+# Gunakan
+php shuriken image:scrape --ai --provider=together
+</code></pre>
+<p>Model default: <code>meta-llama/Llama-3-8b-instruct</code></p>
+<hr />
+<h3><a id="content-perplexity" href="#content-perplexity" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Perplexity</h3>
+<pre><code class="language-bash"># 1. Dapatkan API key di: perplexity.ai/settings/api
+# 2. Tambahkan token:
+php shuriken token add perplexity pplx-...
+
+# Gunakan
+php shuriken image:scrape --ai --provider=perplexity
+</code></pre>
+<p>Model default: <code>llama-3.1-sonar-small-128k-online</code></p>
+<hr />
+<h3><a id="content-fireworks-ai" href="#content-fireworks-ai" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Fireworks AI</h3>
+<p>Inferensi tercepat untuk open-source models (FireAttention engine).</p>
+<pre><code class="language-bash"># 1. Dapatkan API key di: fireworks.ai/account/api-keys
+# 2. Tambahkan token:
+php shuriken token add fireworks fw_...
+
+# Gunakan
+php shuriken image:scrape --ai --provider=fireworks
+php shuriken image:scrape --ai --provider=fireworks --model=accounts/fireworks/models/mixtral-8x7b-instruct-hf
+</code></pre>
+<p>Model default: <code>accounts/fireworks/models/llama-v3p3-70b-instruct</code></p>
+<hr />
+<h3><a id="content-cerebras" href="#content-cerebras" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Cerebras</h3>
+<p>Tercepat secara hardware — chip wafer-scale (~2000 tokens/detik). Ideal untuk job besar.</p>
+<pre><code class="language-bash"># 1. Dapatkan API key di: cloud.cerebras.ai
+# 2. Tambahkan token:
+php shuriken token add cerebras csk-...
+
+# Gunakan
+php shuriken image:scrape --ai --provider=cerebras
+</code></pre>
+<p>Model default: <code>llama-3.3-70b</code></p>
+<hr />
+<h3><a id="content-siliconflow" href="#content-siliconflow" class="heading-permalink" aria-hidden="true" title="Permalink"></a>SiliconFlow</h3>
+<p>Platform murah populer di Asia, free tier tersedia.</p>
+<pre><code class="language-bash"># 1. Dapatkan API key di: cloud.siliconflow.cn/account/ak
+# 2. Tambahkan token:
+php shuriken token add siliconflow sk-...
+
+# Gunakan
+php shuriken image:scrape --ai --provider=siliconflow
+php shuriken image:scrape --ai --provider=siliconflow --model=deepseek-ai/DeepSeek-V3
+</code></pre>
+<p>Model default: <code>Qwen/Qwen2.5-7B-Instruct</code></p>
+<hr />
+<h3><a id="content-novita-ai" href="#content-novita-ai" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Novita AI</h3>
+<p>200+ model tersedia, salah satu yang termurah.</p>
+<pre><code class="language-bash"># 1. Dapatkan API key di: novita.ai/settings/key-management
+# 2. Tambahkan token:
+php shuriken token add novita ...
+
+# Gunakan
+php shuriken image:scrape --ai --provider=novita
+</code></pre>
+<p>Model default: <code>meta-llama/llama-3.3-70b-instruct</code></p>
+<hr />
+<h3><a id="content-ollama-lokal-gratis" href="#content-ollama-lokal-gratis" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Ollama (Lokal, Gratis)</h3>
+<p>Tidak perlu API key. Install Ollama dan jalankan model secara lokal. Sangat disarankan mencoba <strong>Gemma 3</strong> (misal: <code>gemma3:1b</code>) karena ringan dan cukup mumpuni untuk generate konten HTML.</p>
+<blockquote>
+<p><strong>💡 Tips untuk RAM Terbatas (&quot;Laptop Kentang&quot;)</strong>: Jika spesifikasi laptop pas-pasan (RAM 4GB - 8GB), gunakan model berukuran 1B - 2B parameters supaya tetap lancar dan tidak bikin ngelag. Rekomendasi model super ringan: <code>gemma3:1b</code>.</p>
+</blockquote>
+<h4><a id="content-install-di-macos--linux" href="#content-install-di-macos--linux" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Install di macOS / Linux</h4>
+<pre><code class="language-bash">curl -fsSL https://ollama.ai/install.sh | sh
+ollama pull gemma3:1b
+
+# Gunakan
+php shuriken image:scrape --ai --provider=ollama --model=gemma3:1b
+</code></pre>
+<h4><a id="content-install-di-windows" href="#content-install-di-windows" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Install di Windows</h4>
+<p>Perintah <code>curl | sh</code> tidak jalan di Windows. Gunakan installer resmi:</p>
+<ol>
+<li>Download installer di <strong>ollama.com</strong> → klik <strong>Download for Windows</strong></li>
+<li>Install seperti biasa (double click <code>.exe</code>)</li>
+<li>Buka <strong>Command Prompt baru</strong> setelah install selesai</li>
+<li>Jalankan:</li>
+</ol>
+<pre><code class="language-bash">ollama pull gemma3:1b
+</code></pre>
+<ol start="5">
+<li>Lalu gunakan Shuriken seperti biasa:</li>
+</ol>
+<pre><code class="language-bash">php shuriken image:scrape --ai --provider=ollama --model=gemma3:1b
+</code></pre>
+<p>Model default: <code>llama3.2</code></p>
+<hr />
+<h3><a id="content-lm-studio-lokal-gratis" href="#content-lm-studio-lokal-gratis" class="heading-permalink" aria-hidden="true" title="Permalink"></a>LM Studio (Lokal, Gratis)</h3>
+<p>Tidak perlu API key. Download LM Studio, load model, aktifkan Local Server.</p>
+<pre><code class="language-bash"># Gunakan
+php shuriken image:scrape --ai --provider=lmstudio
+</code></pre>
+<p>Download LM Studio di: lmstudio.ai · Model default: <code>local-model</code></p>
+<hr />
+<h3><a id="content-claude-cli-via-subscription" href="#content-claude-cli-via-subscription" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Claude CLI (via Subscription)</h3>
+<p>Tidak perlu API key — pakai Claude Max/Pro subscription.</p>
+<pre><code class="language-bash"># 1. Install CLI (sekali saja)
+npm install -g @anthropic-ai/claude-code
+
+# 2. Login (sekali saja — ikuti proses di browser)
+claude
+
+# Gunakan
+php shuriken image:scrape --ai --provider=claude-cli
+</code></pre>
+<hr />
+<h3><a id="content-gemini-cli-via-subscription" href="#content-gemini-cli-via-subscription" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Gemini CLI (via Subscription)</h3>
+<p>Tidak perlu API key — pakai Google One AI Premium subscription.</p>
+<pre><code class="language-bash"># 1. Install CLI (sekali saja)
+npm install -g @google/gemini-cli
+
+# 2. Login (sekali saja — ikuti proses di browser)
+gemini
+
+# Gunakan
+php shuriken image:scrape --ai --provider=gemini-cli
+</code></pre>
+<hr />
+<h3><a id="content-custom-provider-openai-compatible" href="#content-custom-provider-openai-compatible" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Custom Provider (OpenAI-Compatible)</h3>
+<p>Punya server AI sendiri atau pakai layanan yang belum ada di daftar? Selama mendukung format OpenAI API, bisa langsung daftarkan sebagai custom provider.</p>
+<pre><code class="language-bash"># Daftarkan custom provider
+php shuriken token add myserver sk-xxx --base_url=https://my-ai.com/v1 --model=my-model
+
+# Gunakan
+php shuriken image:scrape --ai --provider=myserver
+
+# Cek daftar provider (custom ditandai [custom])
+php shuriken token list
+</code></pre>
+<p>Custom provider otomatis masuk fallback rotation — kalau provider utama gagal, Shuriken akan mencoba custom provider berikutnya yang punya token aktif.</p>
+<hr />
+<h2><a id="content-token-rotation-multiple-api-key" href="#content-token-rotation-multiple-api-key" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Token Rotation (Multiple API Key)</h2>
+<p>Daftarkan beberapa token untuk mendistribusikan beban dan menghindari rate limit:</p>
+<pre><code class="language-php">'openai_tokens' =&gt; [
+    'sk-proj-token1...',
+    'sk-proj-token2...',
+    'sk-proj-token3...',
+],
+</code></pre>
+<p>Shuriken akan round-robin otomatis di antara token tersebut setiap request.</p>
+<hr />
+<h2><a id="content-override-model-via-cli" href="#content-override-model-via-cli" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Override Model via CLI</h2>
+<p>Gunakan <code>--model</code> untuk override model default tanpa edit config:</p>
+<pre><code class="language-bash">php shuriken image:scrape --ai --provider=openai --model=gpt-4o
+php shuriken image:scrape --ai --provider=groq --model=mixtral-8x7b-32768
+php shuriken image:scrape --ai --provider=openrouter --model=meta-llama/llama-3.1-70b-instruct
+</code></pre>
+<p>Jika <code>--model</code> tidak diset, digunakan default dari <code>config/ai.php</code>.</p>
+
+<div class="subscribe-box">
+  <p class="subscribe-label">📬 Tips & update terbaru dari Internet Marketing Dojo</p>
+  <iframe src="https://imdojo.substack.com/embed" width="480" height="320" style="border:1px solid #EEE;background:white;max-width:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+<div class="footer"><a href="https://dojo.cx/shuriken" target="_blank">Shuriken</a> by <a href="https://imdojo.substack.com" target="_blank">Internet Marketing Dojo</a></div>
+</main>
+</div>
+<script>
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.body.style.overflow='hidden'}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.body.style.overflow=''}
+function handleDrawerClick(e){if(e.target.classList.contains('drawer-backdrop'))closeDrawer()}
+document.querySelectorAll('#drawer .nav-link').forEach(function(a){a.addEventListener('click',closeDrawer)})
+</script>
+<script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="08b4d506-ee5f-49d8-ab6a-b3d3196bc5c0";window.$crisp.push(["config","position:reverse",[false]]);(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>
+</body>
+</html>

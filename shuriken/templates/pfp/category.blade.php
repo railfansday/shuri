@@ -1,0 +1,1 @@
+{{ config('shuriken.category') }}

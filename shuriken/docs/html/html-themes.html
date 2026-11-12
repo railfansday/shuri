@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Themes — Shuriken</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:#222;background:#f5f5f5;line-height:1.7}
+a{color:#c0392b;text-decoration:none}
+a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:240px;flex-shrink:0;background:#1e1e2e;padding:1rem 0;overflow-y:auto;position:sticky;top:0;height:100vh}
+.sidebar-logo{padding:.75rem 1.2rem 1rem;font-size:1.1rem;font-weight:700;color:#fff;border-bottom:1px solid #333}
+.sidebar-logo span{color:#e74c3c}
+.nav-section{padding:.7rem 1.2rem .2rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666}
+.nav-link{display:block;padding:.35rem 1.2rem;color:#bbb;font-size:.88rem;transition:background .15s,color .15s}
+.nav-link:hover{background:#2a2a3e;color:#fff;text-decoration:none}
+.nav-link.active{color:#e74c3c;background:#2a2a3e;font-weight:600}
+.content{flex:1;min-width:0;padding:2.5rem 3rem;max-width:860px}
+h1{font-size:1.8rem;margin-bottom:1.2rem;padding-bottom:.5rem;border-bottom:2px solid #e74c3c;color:#111}
+h2{font-size:1.25rem;margin:2rem 0 .6rem;color:#111}
+h3{font-size:1rem;margin:1.5rem 0 .4rem;color:#333}
+p{margin:.6rem 0}
+ul,ol{margin:.5rem 0 .5rem 1.5rem}
+li{margin:.25rem 0}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.9rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+th{background:#1e1e2e;color:#fff;padding:.5rem .8rem;text-align:left}
+td{padding:.45rem .8rem;border-bottom:1px solid #e0e0e0}
+tr:hover td{background:#fafafa}
+pre{background:#1e1e2e;color:#f8f8f2;padding:1rem 1.2rem;border-radius:6px;overflow-x:auto;margin:1rem 0;font-size:.85rem;line-height:1.5}
+code{font-family:'SFMono-Regular',Consolas,monospace;font-size:.88em}
+p code,li code,td code{background:#eee;padding:.1em .35em;border-radius:3px;color:#c0392b}
+blockquote{border-left:3px solid #e74c3c;padding:.5rem 1rem;color:#555;background:#fff8f8;margin:1rem 0}
+hr{border:none;border-top:1px solid #ddd;margin:1.5rem 0}
+img{max-width:100%;height:auto;border-radius:6px;border:1px solid #e0e0e0;margin:.5rem 0}
+.subscribe-box{margin-top:3rem;padding:1.5rem;background:#fff8f8;border:1px solid #f5c6c6;border-radius:8px;text-align:center}
+.subscribe-label{font-size:.9rem;font-weight:600;color:#c0392b;margin-bottom:.75rem}
+.footer{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #e0e0e0;font-size:.82rem;color:#999}
+.footer a{color:#999}
+.footer a:hover{color:#c0392b}
+.topbar{display:none;align-items:center;gap:.75rem;background:#1e1e2e;padding:.75rem 1rem;position:sticky;top:0;z-index:100}
+.topbar-logo{font-size:1rem;font-weight:700;color:#fff}
+.topbar-logo span{color:#e74c3c}
+.burger{background:none;border:none;cursor:pointer;padding:.25rem;display:flex;flex-direction:column;gap:5px}
+.burger span{display:block;width:22px;height:2px;background:#bbb;border-radius:2px;transition:background .2s}
+.burger:hover span{background:#fff}
+.drawer{position:fixed;inset:0;z-index:200;display:none}
+.drawer.open{display:block}
+.drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.drawer-panel{position:absolute;left:0;top:0;bottom:0;width:260px;background:#1e1e2e;overflow-y:auto;padding:1rem 0;transform:translateX(-100%);transition:transform .25s ease}
+.drawer.open .drawer-panel{transform:translateX(0)}
+.drawer-close{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1.2rem 1rem;border-bottom:1px solid #333;margin-bottom:.25rem}
+.drawer-close .logo{font-size:1rem;font-weight:700;color:#fff}
+.drawer-close .logo span{color:#e74c3c}
+.drawer-close button{background:none;border:none;color:#888;font-size:1.3rem;cursor:pointer;line-height:1}
+.drawer-close button:hover{color:#fff}
+@media(max-width:700px){.sidebar{display:none}.content{padding:1.5rem}.topbar{display:flex}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="burger" onclick="openDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-logo">⚡ <span>Shuriken</span></div>
+</div>
+<div class="drawer" id="drawer" onclick="handleDrawerClick(event)">
+  <div class="drawer-backdrop"></div>
+  <div class="drawer-panel">
+    <div class="drawer-close">
+      <div class="logo">⚡ <span>Shuriken</span></div>
+      <button onclick="closeDrawer()" aria-label="Tutup">✕</button>
+    </div>
+    <a href="index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link active" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+  </div>
+</div>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-logo">⚡ <span>Shuriken</span></div>
+  <a href="index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link active" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+</aside>
+<main class="content">
+<h1><a id="content-html-themes" href="#content-html-themes" class="heading-permalink" aria-hidden="true" title="Permalink"></a>HTML Themes</h1>
+<p>Shuriken menyediakan 45 tema untuk export HTML. Setiap tema menghasilkan website statis yang siap upload.</p>
+<h2><a id="content-cara-pakai" href="#content-cara-pakai" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Cara Pakai</h2>
+<pre><code class="language-bash">php shuriken image:export --platform=html --theme=five-dark
+php shuriken image:export --platform=html --theme=random
+php shuriken image:export --platform=html --theme=eight-mini --site_name=&quot;Foto Blog&quot;
+</code></pre>
+<h2><a id="content-opsi-tambahan" href="#content-opsi-tambahan" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Opsi Tambahan</h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Keterangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--theme</code></td>
+<td><code>default</code></td>
+<td>Nama tema</td>
+</tr>
+<tr>
+<td><code>--site_name</code></td>
+<td>Keyword pertama</td>
+<td>Nama website</td>
+</tr>
+<tr>
+<td><code>--description</code></td>
+<td>Judul post pertama</td>
+<td>Deskripsi website</td>
+</tr>
+</tbody>
+</table>
+<h2><a id="content-tema-random" href="#content-tema-random" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Tema Random</h2>
+<pre><code class="language-bash">php shuriken image:export --platform=html --theme=random
+</code></pre>
+<p>Setiap kali dijalankan, tema dipilih secara acak dari 45 tema yang tersedia. Cocok untuk menghasilkan variasi website.</p>
+<hr />
+<h2><a id="content-keluarga-tema" href="#content-keluarga-tema" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Keluarga Tema</h2>
+<h3><a id="content-default" href="#content-default" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Default</h3>
+<p><img src="img/themes/default.png" alt="Preview tema Default" /></p>
+<table>
+<thead>
+<tr>
+<th>Tema</th>
+<th>Deskripsi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>default</code></td>
+<td>Tema dasar — grid sederhana, warna putih</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3><a id="content-one--kartu-bertumpuk" href="#content-one--kartu-bertumpuk" class="heading-permalink" aria-hidden="true" title="Permalink"></a>One — Kartu Bertumpuk</h3>
+<p><img src="img/themes/one.png" alt="Preview tema One" /></p>
+<p>Layout kartu (card grid) dengan gambar penuh dan teks di bawahnya. Font: Georgia (serif). Cocok untuk blog foto atau travel.</p>
+<table>
+<thead>
+<tr>
+<th>Tema</th>
+<th>Background</th>
+<th>Teks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>one</code></td>
+<td>Putih</td>
+<td>Gelap</td>
+</tr>
+<tr>
+<td><code>one-dark</code></td>
+<td>Abu gelap (#1a1a1a)</td>
+<td>Terang</td>
+</tr>
+<tr>
+<td><code>one-mini</code></td>
+<td>Putih</td>
+<td>Gelap, kompak</td>
+</tr>
+<tr>
+<td><code>one-mini-dark</code></td>
+<td>Abu gelap</td>
+<td>Terang, kompak</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3><a id="content-two--minimal-grid" href="#content-two--minimal-grid" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Two — Minimal Grid</h3>
+<p><img src="img/themes/two.png" alt="Preview tema Two" /></p>
+<p>Grid bersih dengan hover efek sederhana. Font: system-ui. Gaya modern dan minimalis.</p>
+<table>
+<thead>
+<tr>
+<th>Tema</th>
+<th>Background</th>
+<th>Teks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>two</code></td>
+<td>Putih</td>
+<td>Gelap</td>
+</tr>
+<tr>
+<td><code>two-dark</code></td>
+<td>Hitam (#111)</td>
+<td>Terang</td>
+</tr>
+<tr>
+<td><code>two-mini</code></td>
+<td>Putih</td>
+<td>Gelap, kompak</td>
+</tr>
+<tr>
+<td><code>two-mini-dark</code></td>
+<td>Hitam</td>
+<td>Terang, kompak</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3><a id="content-three--bootstrap-grid" href="#content-three--bootstrap-grid" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Three — Bootstrap Grid</h3>
+<p><img src="img/themes/three.png" alt="Preview tema Three" /></p>
+<p>Menggunakan Bootstrap 4. Kartu dengan shadow, rounded corners. Gaya yang familiar dan profesional.</p>
+<table>
+<thead>
+<tr>
+<th>Tema</th>
+<th>Background</th>
+<th>Teks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>three</code></td>
+<td>Abu muda (#f8f9fa)</td>
+<td>Gelap</td>
+</tr>
+<tr>
+<td><code>three-dark</code></td>
+<td>Gelap</td>
+<td>Terang</td>
+</tr>
+<tr>
+<td><code>three-mini</code></td>
+<td>Abu muda</td>
+<td>Gelap, kompak</td>
+</tr>
+<tr>
+<td><code>three-mini-dark</code></td>
+<td>Gelap</td>
+<td>Terang, kompak</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3><a id="content-four--pinterest-style" href="#content-four--pinterest-style" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Four — Pinterest Style</h3>
+<p><img src="img/themes/four.png" alt="Preview tema Four" /></p>
+<p>Grid masonry dengan kolom berbeda tinggi (CSS columns). Font: Nunito. Cocok untuk galeri foto beragam ukuran.</p>
+<table>
+<thead>
+<tr>
+<th>Tema</th>
+<th>Background</th>
+<th>Teks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>four</code></td>
+<td>Putih</td>
+<td>Gelap</td>
+</tr>
+<tr>
+<td><code>four-dark</code></td>
+<td>Hitam (#0d0d0d)</td>
+<td>Terang</td>
+</tr>
+<tr>
+<td><code>four-mini</code></td>
+<td>Putih</td>
+<td>Gelap, kompak</td>
+</tr>
+<tr>
+<td><code>four-mini-dark</code></td>
+<td>Hitam</td>
+<td>Terang, kompak</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3><a id="content-five--masonry-modern" href="#content-five--masonry-modern" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Five — Masonry Modern</h3>
+<p><img src="img/themes/five.png" alt="Preview tema Five" /></p>
+<p>Masonry layout menggunakan CSS columns dengan gap bersih. Font: Nunito. Tanpa sidebar — konten penuh.</p>
+<table>
+<thead>
+<tr>
+<th>Tema</th>
+<th>Background</th>
+<th>Teks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>five</code></td>
+<td>Putih</td>
+<td>Gelap</td>
+</tr>
+<tr>
+<td><code>five-dark</code></td>
+<td>Abu sangat gelap (#111)</td>
+<td>Terang</td>
+</tr>
+<tr>
+<td><code>five-mini</code></td>
+<td>Putih</td>
+<td>Gelap, kompak</td>
+</tr>
+<tr>
+<td><code>five-mini-dark</code></td>
+<td>Abu sangat gelap</td>
+<td>Terang, kompak</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3><a id="content-six--magazine" href="#content-six--magazine" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Six — Magazine</h3>
+<p><img src="img/themes/six.png" alt="Preview tema Six" /></p>
+<p>Layout majalah: post pertama tampil besar sebagai hero, diikuti grid + sidebar. Font: Merriweather (serif). Aksen merah.</p>
+<table>
+<thead>
+<tr>
+<th>Tema</th>
+<th>Background</th>
+<th>Teks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>six</code></td>
+<td>Putih</td>
+<td>Gelap, serif</td>
+</tr>
+<tr>
+<td><code>six-dark</code></td>
+<td>Hitam (#0a0a0a)</td>
+<td>Terang, serif</td>
+</tr>
+<tr>
+<td><code>six-mini</code></td>
+<td>Putih</td>
+<td>Gelap, kompak</td>
+</tr>
+<tr>
+<td><code>six-mini-dark</code></td>
+<td>Hitam</td>
+<td>Terang, kompak</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3><a id="content-seven--list-horizontal" href="#content-seven--list-horizontal" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Seven — List Horizontal</h3>
+<p><img src="img/themes/seven.png" alt="Preview tema Seven" /></p>
+<p>Layout daftar: thumbnail di kiri, teks di kanan. Font: Inter. Bersih dan mudah dibaca. Mirip artikel berita.</p>
+<table>
+<thead>
+<tr>
+<th>Tema</th>
+<th>Background</th>
+<th>Teks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>seven</code></td>
+<td>Putih (#fafafa)</td>
+<td>Gelap</td>
+</tr>
+<tr>
+<td><code>seven-dark</code></td>
+<td>Hitam (#111)</td>
+<td>Terang</td>
+</tr>
+<tr>
+<td><code>seven-mini</code></td>
+<td>Putih</td>
+<td>Gelap, kompak</td>
+</tr>
+<tr>
+<td><code>seven-mini-dark</code></td>
+<td>Hitam</td>
+<td>Terang, kompak</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3><a id="content-eight--overlay-dark" href="#content-eight--overlay-dark" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Eight — Overlay Dark</h3>
+<p><img src="img/themes/eight.png" alt="Preview tema Eight" /></p>
+<p>CSS Grid dengan rasio 1:1 (kotak). Saat hover, judul muncul dari bawah dengan efek overlay gradient. Font: Poppins. Gaya Instagram/galeri modern.</p>
+<table>
+<thead>
+<tr>
+<th>Tema</th>
+<th>Background</th>
+<th>Teks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eight</code></td>
+<td>Hitam (#111)</td>
+<td>Putih (overlay)</td>
+</tr>
+<tr>
+<td><code>eight-dark</code></td>
+<td>Hitam pekat (#000)</td>
+<td>Putih (overlay)</td>
+</tr>
+<tr>
+<td><code>eight-mini</code></td>
+<td>Hitam (#111)</td>
+<td>Putih, 3 kolom</td>
+</tr>
+<tr>
+<td><code>eight-mini-dark</code></td>
+<td>Hitam pekat (#000)</td>
+<td>Putih, 3 kolom</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3><a id="content-nine--sidebar-blog" href="#content-nine--sidebar-blog" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Nine — Sidebar Blog</h3>
+<p><img src="img/themes/nine.png" alt="Preview tema Nine" /></p>
+<p>Layout 2 kolom: sidebar kiri (daftar 10 post terbaru) + konten utama di kanan. Font: Georgia (serif) + Arial (UI). Gaya blog personal yang rapi.</p>
+<table>
+<thead>
+<tr>
+<th>Tema</th>
+<th>Background</th>
+<th>Aksen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>nine</code></td>
+<td>Abu muda (#f8f9fa)</td>
+<td>Biru (#2c7be5)</td>
+</tr>
+<tr>
+<td><code>nine-dark</code></td>
+<td>Gelap (#0f1117)</td>
+<td>Biru terang (#5b9cf6)</td>
+</tr>
+<tr>
+<td><code>nine-mini</code></td>
+<td>Abu muda, 800px</td>
+<td>Biru (#2c7be5)</td>
+</tr>
+<tr>
+<td><code>nine-mini-dark</code></td>
+<td>Gelap, 800px</td>
+<td>Biru terang (#5b9cf6)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3><a id="content-ten--tiled-gallery" href="#content-ten--tiled-gallery" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Ten — Tiled Gallery</h3>
+<p><img src="img/themes/ten.png" alt="Preview tema Ten" /></p>
+<p>Grid tiles besar 3 kolom dengan rasio 4:3. Hover menampilkan judul via overlay. Image-first, minimal text. Font: Poppins. Aksen oranye.</p>
+<table>
+<thead>
+<tr>
+<th>Tema</th>
+<th>Background</th>
+<th>Aksen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ten</code></td>
+<td>Putih</td>
+<td>Oranye (#ff6b35)</td>
+</tr>
+<tr>
+<td><code>ten-dark</code></td>
+<td>Hitam (#111)</td>
+<td>Oranye (#ff8c5a)</td>
+</tr>
+<tr>
+<td><code>ten-mini</code></td>
+<td>Putih, 900px, 2 kolom</td>
+<td>Oranye (#ff6b35)</td>
+</tr>
+<tr>
+<td><code>ten-mini-dark</code></td>
+<td>Hitam, 900px, 2 kolom</td>
+<td>Oranye (#ff8c5a)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3><a id="content-eleven--news-article" href="#content-eleven--news-article" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Eleven — News Article</h3>
+<p><img src="img/themes/eleven.png" alt="Preview tema Eleven" /></p>
+<p>Halaman artikel bergaya media online. Kolom sempit (760px) untuk readability. Font: Lora (serif) + Inter. Aksen merah. Index: daftar artikel dengan thumbnail kecil.</p>
+<table>
+<thead>
+<tr>
+<th>Tema</th>
+<th>Background</th>
+<th>Aksen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eleven</code></td>
+<td>Putih</td>
+<td>Merah (#c0392b)</td>
+</tr>
+<tr>
+<td><code>eleven-dark</code></td>
+<td>Navy gelap (#1a1a2e)</td>
+<td>Merah (#e74c3c)</td>
+</tr>
+<tr>
+<td><code>eleven-mini</code></td>
+<td>Putih, 580px</td>
+<td>Merah (#c0392b)</td>
+</tr>
+<tr>
+<td><code>eleven-mini-dark</code></td>
+<td>Navy gelap, 580px</td>
+<td>Merah (#e74c3c)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2><a id="content-perbedaan-regular-vs-mini" href="#content-perbedaan-regular-vs-mini" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Perbedaan Regular vs Mini</h2>
+<table>
+<thead>
+<tr>
+<th>Varian</th>
+<th>Lebar Max</th>
+<th>Kolom</th>
+<th>Cocok untuk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Regular</td>
+<td>1280px</td>
+<td>4 kolom</td>
+<td>Desktop</td>
+</tr>
+<tr>
+<td>Mini</td>
+<td>900px</td>
+<td>3 kolom</td>
+<td>Mobile-first, compact</td>
+</tr>
+</tbody>
+</table>
+<p>Semua tema responsive — otomatis menyesuaikan di layar kecil.</p>
+<hr />
+<h2><a id="content-konten-yang-dihasilkan-per-export" href="#content-konten-yang-dihasilkan-per-export" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Konten yang Dihasilkan per Export</h2>
+<p>Setiap ZIP hasil export berisi:</p>
+<ul>
+<li><code>index.html</code> — Halaman utama dengan daftar semua post</li>
+<li><code>{slug}.html</code> — Satu file per post</li>
+<li><code>sitemap.xml</code> — Sitemap untuk SEO</li>
+<li><code>contact.html</code>, <code>copyright.html</code>, <code>dmca.html</code>, <code>privacy-policy.html</code> — Halaman statis</li>
+</ul>
+<hr />
+<h2><a id="content-daftar-lengkap-45-tema" href="#content-daftar-lengkap-45-tema" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Daftar Lengkap 45 Tema</h2>
+<pre><code>default
+eight        eight-dark        eight-mini        eight-mini-dark
+eleven       eleven-dark       eleven-mini       eleven-mini-dark
+five         five-dark         five-mini         five-mini-dark
+four         four-dark         four-mini         four-mini-dark
+nine         nine-dark         nine-mini         nine-mini-dark
+one          one-dark          one-mini          one-mini-dark
+seven        seven-dark        seven-mini        seven-mini-dark
+six          six-dark          six-mini          six-mini-dark
+ten          ten-dark          ten-mini          ten-mini-dark
+three        three-dark        three-mini        three-mini-dark
+two          two-dark          two-mini          two-mini-dark
+</code></pre>
+
+<div class="subscribe-box">
+  <p class="subscribe-label">📬 Tips & update terbaru dari Internet Marketing Dojo</p>
+  <iframe src="https://imdojo.substack.com/embed" width="480" height="320" style="border:1px solid #EEE;background:white;max-width:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+<div class="footer"><a href="https://dojo.cx/shuriken" target="_blank">Shuriken</a> by <a href="https://imdojo.substack.com" target="_blank">Internet Marketing Dojo</a></div>
+</main>
+</div>
+<script>
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.body.style.overflow='hidden'}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.body.style.overflow=''}
+function handleDrawerClick(e){if(e.target.classList.contains('drawer-backdrop'))closeDrawer()}
+document.querySelectorAll('#drawer .nav-link').forEach(function(a){a.addEventListener('click',closeDrawer)})
+</script>
+<script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="08b4d506-ee5f-49d8-ab6a-b3d3196bc5c0";window.$crisp.push(["config","position:reverse",[false]]);(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>
+</body>
+</html>

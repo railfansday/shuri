@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Platform Export — Shuriken</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:#222;background:#f5f5f5;line-height:1.7}
+a{color:#c0392b;text-decoration:none}
+a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:240px;flex-shrink:0;background:#1e1e2e;padding:1rem 0;overflow-y:auto;position:sticky;top:0;height:100vh}
+.sidebar-logo{padding:.75rem 1.2rem 1rem;font-size:1.1rem;font-weight:700;color:#fff;border-bottom:1px solid #333}
+.sidebar-logo span{color:#e74c3c}
+.nav-section{padding:.7rem 1.2rem .2rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666}
+.nav-link{display:block;padding:.35rem 1.2rem;color:#bbb;font-size:.88rem;transition:background .15s,color .15s}
+.nav-link:hover{background:#2a2a3e;color:#fff;text-decoration:none}
+.nav-link.active{color:#e74c3c;background:#2a2a3e;font-weight:600}
+.content{flex:1;min-width:0;padding:2.5rem 3rem;max-width:860px}
+h1{font-size:1.8rem;margin-bottom:1.2rem;padding-bottom:.5rem;border-bottom:2px solid #e74c3c;color:#111}
+h2{font-size:1.25rem;margin:2rem 0 .6rem;color:#111}
+h3{font-size:1rem;margin:1.5rem 0 .4rem;color:#333}
+p{margin:.6rem 0}
+ul,ol{margin:.5rem 0 .5rem 1.5rem}
+li{margin:.25rem 0}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.9rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+th{background:#1e1e2e;color:#fff;padding:.5rem .8rem;text-align:left}
+td{padding:.45rem .8rem;border-bottom:1px solid #e0e0e0}
+tr:hover td{background:#fafafa}
+pre{background:#1e1e2e;color:#f8f8f2;padding:1rem 1.2rem;border-radius:6px;overflow-x:auto;margin:1rem 0;font-size:.85rem;line-height:1.5}
+code{font-family:'SFMono-Regular',Consolas,monospace;font-size:.88em}
+p code,li code,td code{background:#eee;padding:.1em .35em;border-radius:3px;color:#c0392b}
+blockquote{border-left:3px solid #e74c3c;padding:.5rem 1rem;color:#555;background:#fff8f8;margin:1rem 0}
+hr{border:none;border-top:1px solid #ddd;margin:1.5rem 0}
+img{max-width:100%;height:auto;border-radius:6px;border:1px solid #e0e0e0;margin:.5rem 0}
+.subscribe-box{margin-top:3rem;padding:1.5rem;background:#fff8f8;border:1px solid #f5c6c6;border-radius:8px;text-align:center}
+.subscribe-label{font-size:.9rem;font-weight:600;color:#c0392b;margin-bottom:.75rem}
+.footer{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #e0e0e0;font-size:.82rem;color:#999}
+.footer a{color:#999}
+.footer a:hover{color:#c0392b}
+.topbar{display:none;align-items:center;gap:.75rem;background:#1e1e2e;padding:.75rem 1rem;position:sticky;top:0;z-index:100}
+.topbar-logo{font-size:1rem;font-weight:700;color:#fff}
+.topbar-logo span{color:#e74c3c}
+.burger{background:none;border:none;cursor:pointer;padding:.25rem;display:flex;flex-direction:column;gap:5px}
+.burger span{display:block;width:22px;height:2px;background:#bbb;border-radius:2px;transition:background .2s}
+.burger:hover span{background:#fff}
+.drawer{position:fixed;inset:0;z-index:200;display:none}
+.drawer.open{display:block}
+.drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.drawer-panel{position:absolute;left:0;top:0;bottom:0;width:260px;background:#1e1e2e;overflow-y:auto;padding:1rem 0;transform:translateX(-100%);transition:transform .25s ease}
+.drawer.open .drawer-panel{transform:translateX(0)}
+.drawer-close{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1.2rem 1rem;border-bottom:1px solid #333;margin-bottom:.25rem}
+.drawer-close .logo{font-size:1rem;font-weight:700;color:#fff}
+.drawer-close .logo span{color:#e74c3c}
+.drawer-close button{background:none;border:none;color:#888;font-size:1.3rem;cursor:pointer;line-height:1}
+.drawer-close button:hover{color:#fff}
+@media(max-width:700px){.sidebar{display:none}.content{padding:1.5rem}.topbar{display:flex}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="burger" onclick="openDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-logo">⚡ <span>Shuriken</span></div>
+</div>
+<div class="drawer" id="drawer" onclick="handleDrawerClick(event)">
+  <div class="drawer-backdrop"></div>
+  <div class="drawer-panel">
+    <div class="drawer-close">
+      <div class="logo">⚡ <span>Shuriken</span></div>
+      <button onclick="closeDrawer()" aria-label="Tutup">✕</button>
+    </div>
+    <a href="index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link active" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+  </div>
+</div>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-logo">⚡ <span>Shuriken</span></div>
+  <a href="index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link active" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+</aside>
+<main class="content">
+<h1><a id="content-platform-export" href="#content-platform-export" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Platform Export</h1>
+<p>Shuriken mendukung 6 format export. Semua hasil tersimpan di folder <code>exports/</code>.</p>
+<h2><a id="content-ringkasan" href="#content-ringkasan" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Ringkasan</h2>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Flag</th>
+<th>Format</th>
+<th>Langsung Import?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WordPress</td>
+<td><code>wordpress</code></td>
+<td>XML</td>
+<td>Ya</td>
+</tr>
+<tr>
+<td>Blogger</td>
+<td><code>blogger</code></td>
+<td>XML</td>
+<td>Ya</td>
+</tr>
+<tr>
+<td>Hugo</td>
+<td><code>hugo</code></td>
+<td>ZIP (Markdown)</td>
+<td>Ya</td>
+</tr>
+<tr>
+<td>CSV</td>
+<td><code>csv</code></td>
+<td>CSV</td>
+<td>Ya (Excel/Sheets)</td>
+</tr>
+<tr>
+<td>Native</td>
+<td><code>native</code></td>
+<td>SQLite</td>
+<td>Migrasi DB</td>
+</tr>
+<tr>
+<td>HTML</td>
+<td><code>html</code></td>
+<td>ZIP (Website)</td>
+<td>Upload ke hosting</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2><a id="content-wordpress" href="#content-wordpress" class="heading-permalink" aria-hidden="true" title="Permalink"></a>WordPress</h2>
+<pre><code class="language-bash">php shuriken image:export --platform=wordpress
+</code></pre>
+<p><strong>Output:</strong> <code>exports/wordpress-1.xml</code></p>
+<p><strong>Format:</strong> WordPress Extended RSS (WXR) — format standar WordPress import.</p>
+<p><strong>Cara import:</strong></p>
+<ol>
+<li>Buka WordPress Admin → Tools → Import</li>
+<li>Pilih &quot;WordPress&quot;</li>
+<li>Upload file <code>wordpress-1.xml</code></li>
+<li>Assign authors dan import</li>
+</ol>
+<p><strong>Yang diexport:</strong></p>
+<ul>
+<li>Judul post</li>
+<li>Konten HTML</li>
+<li>Kategori</li>
+<li>Tag</li>
+<li>Tanggal publikasi (tersebar di rentang <code>--start</code> sampai <code>--end</code>)</li>
+<li>Status: published</li>
+</ul>
+<hr />
+<h2><a id="content-blogger" href="#content-blogger" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Blogger</h2>
+<pre><code class="language-bash">php shuriken image:export --platform=blogger
+</code></pre>
+<p><strong>Output:</strong> <code>exports/blogger-1.xml</code></p>
+<p><strong>Format:</strong> Atom XML — format standar Blogger import.</p>
+<p><strong>Cara import:</strong></p>
+<ol>
+<li>Buka Blogger → Settings → Manage blog</li>
+<li>Import content → pilih file XML</li>
+<li>Tunggu proses selesai</li>
+</ol>
+<hr />
+<h2><a id="content-hugo" href="#content-hugo" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Hugo</h2>
+<pre><code class="language-bash">php shuriken image:export --platform=hugo
+</code></pre>
+<p><strong>Output:</strong> <code>exports/hugo-1.zip</code></p>
+<p><strong>Format:</strong> ZIP berisi file <code>.md</code> dengan Hugo frontmatter.</p>
+<p><strong>Struktur ZIP:</strong></p>
+<pre><code>hugo-1.zip
+├── judul-post-1.md
+├── judul-post-2.md
+└── ...
+</code></pre>
+<p><strong>Frontmatter contoh:</strong></p>
+<pre><code class="language-yaml">---
+title: &quot;Judul Post&quot;
+date: 2024-03-15
+categories: [&quot;Resep&quot;]
+tags: [&quot;masakan&quot;, &quot;indonesia&quot;]
+---
+
+Konten dalam format Markdown...
+</code></pre>
+<p><strong>Cara pakai:</strong></p>
+<ol>
+<li>Extract ZIP ke folder <code>content/posts/</code> di Hugo project</li>
+<li>Jalankan <code>hugo serve</code></li>
+</ol>
+<hr />
+<h2><a id="content-csv" href="#content-csv" class="heading-permalink" aria-hidden="true" title="Permalink"></a>CSV</h2>
+<pre><code class="language-bash">php shuriken image:export --platform=csv
+</code></pre>
+<p><strong>Output:</strong> <code>exports/csv-1.csv</code></p>
+<p><strong>Format:</strong> CSV dengan header kolom.</p>
+<p><strong>Kolom yang tersedia:</strong></p>
+<ul>
+<li><code>id</code>, <code>keyword_id</code></li>
+<li><code>title</code>, <code>slug</code></li>
+<li><code>content</code> (HTML)</li>
+<li><code>markdown</code></li>
+<li><code>category</code></li>
+<li><code>tags</code> (JSON array)</li>
+<li><code>published_at</code></li>
+<li><code>created_at</code>, <code>updated_at</code></li>
+</ul>
+<p><strong>Cara pakai:</strong></p>
+<ul>
+<li>Buka di Excel atau Google Sheets</li>
+<li>Import ke CMS custom</li>
+<li>Analisis data dengan Python/pandas</li>
+</ul>
+<hr />
+<h2><a id="content-native-sqlite" href="#content-native-sqlite" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Native (SQLite)</h2>
+<pre><code class="language-bash">php shuriken image:export --platform=native
+</code></pre>
+<p><strong>Output:</strong> <code>exports/abc12.sqlite</code> (nama random 5 karakter)</p>
+<p><strong>Format:</strong> File database SQLite lengkap dengan semua tabel dan relasi.</p>
+<p><strong>Tabel yang ada:</strong></p>
+<ul>
+<li><code>keywords</code> — keyword yang di-scrape</li>
+<li><code>images</code> — gambar hasil scraping</li>
+<li><code>posts</code> — konten blog yang dihasilkan</li>
+</ul>
+<p><strong>Cara pakai:</strong></p>
+<ul>
+<li>Buka dengan DB Browser for SQLite</li>
+<li>Import ke MySQL/PostgreSQL dengan tool migrasi</li>
+<li>Dipakai sebagai database untuk aplikasi lain</li>
+</ul>
+<hr />
+<h2><a id="content-html-static-website" href="#content-html-static-website" class="heading-permalink" aria-hidden="true" title="Permalink"></a>HTML (Static Website)</h2>
+<pre><code class="language-bash">php shuriken image:export --platform=html --theme=five-dark
+</code></pre>
+<p><strong>Output:</strong> <code>exports/html-1.zip</code></p>
+<p><strong>Format:</strong> ZIP berisi website statis lengkap siap upload.</p>
+<p><strong>Isi ZIP:</strong></p>
+<pre><code>html-1.zip
+├── index.html          — Halaman utama (grid semua post)
+├── judul-post-1.html   — Halaman per post
+├── judul-post-2.html
+├── sitemap.xml         — Sitemap untuk SEO
+├── contact.html
+├── copyright.html
+├── dmca.html
+└── privacy-policy.html
+</code></pre>
+<p><strong>Option tambahan:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Keterangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--theme</code></td>
+<td><code>default</code></td>
+<td>Pilih tema (33 tersedia)</td>
+</tr>
+<tr>
+<td><code>--site_name</code></td>
+<td>Keyword pertama</td>
+<td>Nama website di header</td>
+</tr>
+<tr>
+<td><code>--description</code></td>
+<td>Judul post pertama</td>
+<td>Deskripsi/tagline</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cara deploy:</strong></p>
+<ol>
+<li>Extract ZIP</li>
+<li>Upload semua file ke hosting (cPanel, Netlify, Vercel, GitHub Pages, dll)</li>
+<li>Tidak perlu PHP atau database — murni HTML/CSS</li>
+</ol>
+<p>Lihat <a href="html-themes.html">HTML Themes</a> untuk daftar lengkap 33 tema.</p>
+<h3><a id="content-ads--tracking" href="#content-ads--tracking" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Ads &amp; Tracking</h3>
+<blockquote>
+<p>💰 Rekomendasi ad network: <a href="https://beta.publishers.adsterra.com/referral/hdKsY5N1yr"><strong>Adsterra</strong></a> — cocok untuk site baru, tanpa minimum traffic. Tersedia banner, native ads, popunder, dan social bar.</p>
+</blockquote>
+<p>Shuriken menyediakan beberapa slot di folder <code>templates/export/html/_ads/</code>. Edit file yang sesuai, lalu export ulang — kode akan masuk ke semua halaman secara otomatis.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Posisi di halaman</th>
+<th>Cocok untuk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>header.blade.php</code></td>
+<td>Di dalam <code>&lt;head&gt;</code></td>
+<td>Adsense auto ads, GTM, meta ads pixel</td>
+</tr>
+<tr>
+<td><code>related.blade.php</code></td>
+<td>Di antara navigasi dan konten</td>
+<td>Banner display, native ads</td>
+</tr>
+<tr>
+<td><code>bar.blade.php</code></td>
+<td>Sebelum <code>&lt;/body&gt;</code></td>
+<td>Sticky bar, interstitial</td>
+</tr>
+<tr>
+<td><code>footer.blade.php</code></td>
+<td>Sebelum <code>&lt;/body&gt;</code></td>
+<td>Stats (GA, Statcounter, Histats), popunder, social bar</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Contoh: Google Analytics</strong></p>
+<p>Edit <code>footer.blade.php</code>:</p>
+<pre><code class="language-html">&lt;script async src=&quot;https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXX');
+&lt;/script&gt;
+</code></pre>
+<p><strong>Contoh: Adsterra Popunder / Social Bar</strong></p>
+<p>Edit <code>footer.blade.php</code>, tempel script yang diberikan Adsterra:</p>
+<pre><code class="language-html">&lt;script src=&quot;//your-adsterra-script-url&quot; ...&gt;&lt;/script&gt;
+</code></pre>
+<p><strong>Contoh: Adsterra Banner / Native</strong></p>
+<p>Edit <code>related.blade.php</code>, tempel kode banner di sana:</p>
+<pre><code class="language-html">&lt;div id=&quot;adsterra-banner&quot;&gt;
+  &lt;script&gt;...&lt;/script&gt;
+&lt;/div&gt;
+</code></pre>
+<hr />
+<h2><a id="content-option-umum" href="#content-option-umum" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Option Umum</h2>
+<p>Semua platform mendukung option berikut:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Keterangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--category</code></td>
+<td>Uncategorized</td>
+<td>Kategori untuk semua post</td>
+</tr>
+<tr>
+<td><code>--start</code></td>
+<td>1 tahun lalu</td>
+<td>Tanggal mulai publikasi (Y-m-d)</td>
+</tr>
+<tr>
+<td><code>--end</code></td>
+<td>Hari ini</td>
+<td>Tanggal akhir publikasi (Y-m-d)</td>
+</tr>
+<tr>
+<td><code>--chunk</code></td>
+<td>50000</td>
+<td>Maksimal post per file</td>
+</tr>
+<tr>
+<td><code>--clear_post</code></td>
+<td>false</td>
+<td>Hapus folder <code>exports/</code> sebelum export</td>
+</tr>
+</tbody>
+</table>
+<h3><a id="content-tentang---chunk" href="#content-tentang---chunk" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Tentang <code>--chunk</code></h3>
+<p>Jika post lebih dari <code>--chunk</code>, Shuriken akan membuat multiple file:</p>
+<ul>
+<li><code>wordpress-1.xml</code>, <code>wordpress-2.xml</code>, dst.</li>
+<li><code>html-1.zip</code>, <code>html-2.zip</code>, dst.</li>
+</ul>
+<pre><code class="language-bash"># Export dengan 1000 post per file
+php shuriken image:export --platform=wordpress --chunk=1000
+</code></pre>
+<h3><a id="content-tentang-rentang-tanggal" href="#content-tentang-rentang-tanggal" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Tentang Rentang Tanggal</h3>
+<p>Post akan tersebar secara acak di antara <code>--start</code> dan <code>--end</code>:</p>
+<pre><code class="language-bash"># Post tersebar di tahun 2024
+php shuriken image:export --platform=wordpress \
+    --start=2024-01-01 \
+    --end=2024-12-31
+</code></pre>
+
+<div class="subscribe-box">
+  <p class="subscribe-label">📬 Tips & update terbaru dari Internet Marketing Dojo</p>
+  <iframe src="https://imdojo.substack.com/embed" width="480" height="320" style="border:1px solid #EEE;background:white;max-width:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+<div class="footer"><a href="https://dojo.cx/shuriken" target="_blank">Shuriken</a> by <a href="https://imdojo.substack.com" target="_blank">Internet Marketing Dojo</a></div>
+</main>
+</div>
+<script>
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.body.style.overflow='hidden'}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.body.style.overflow=''}
+function handleDrawerClick(e){if(e.target.classList.contains('drawer-backdrop'))closeDrawer()}
+document.querySelectorAll('#drawer .nav-link').forEach(function(a){a.addEventListener('click',closeDrawer)})
+</script>
+<script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="08b4d506-ee5f-49d8-ab6a-b3d3196bc5c0";window.$crisp.push(["config","position:reverse",[false]]);(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>
+</body>
+</html>

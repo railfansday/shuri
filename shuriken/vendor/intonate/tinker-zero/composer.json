@@ -1,0 +1,48 @@
+{
+    "name": "intonate/tinker-zero",
+    "description": "Use laravel/tinker on your laravel-zero applications",
+    "keywords": ["tinker", "tinker-zero", "repl", "psysh", "laravel", "laravel-zero"],
+    "license": "MIT",
+    "homepage": "https://github.com/laravel/tinker#readme",
+    "support": {
+        "issues": "https://github.com/intonate/tinker-zero/issues",
+        "source": "https://github.com/intonate/tinker-zero"
+    },
+    "authors": [
+        {
+            "name": "Jorge González",
+            "email": "scrub.mx@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2.5|^8.0",
+        "laravel/tinker": "^1.0|^2.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^4.0",
+        "phpunit/phpunit": "^8.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Intonate\\TinkerZero\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Intonate\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Intonate\\TinkerZero\\TinkerZeroServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

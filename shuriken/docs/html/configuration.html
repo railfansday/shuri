@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Konfigurasi — Shuriken</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:#222;background:#f5f5f5;line-height:1.7}
+a{color:#c0392b;text-decoration:none}
+a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:240px;flex-shrink:0;background:#1e1e2e;padding:1rem 0;overflow-y:auto;position:sticky;top:0;height:100vh}
+.sidebar-logo{padding:.75rem 1.2rem 1rem;font-size:1.1rem;font-weight:700;color:#fff;border-bottom:1px solid #333}
+.sidebar-logo span{color:#e74c3c}
+.nav-section{padding:.7rem 1.2rem .2rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666}
+.nav-link{display:block;padding:.35rem 1.2rem;color:#bbb;font-size:.88rem;transition:background .15s,color .15s}
+.nav-link:hover{background:#2a2a3e;color:#fff;text-decoration:none}
+.nav-link.active{color:#e74c3c;background:#2a2a3e;font-weight:600}
+.content{flex:1;min-width:0;padding:2.5rem 3rem;max-width:860px}
+h1{font-size:1.8rem;margin-bottom:1.2rem;padding-bottom:.5rem;border-bottom:2px solid #e74c3c;color:#111}
+h2{font-size:1.25rem;margin:2rem 0 .6rem;color:#111}
+h3{font-size:1rem;margin:1.5rem 0 .4rem;color:#333}
+p{margin:.6rem 0}
+ul,ol{margin:.5rem 0 .5rem 1.5rem}
+li{margin:.25rem 0}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.9rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+th{background:#1e1e2e;color:#fff;padding:.5rem .8rem;text-align:left}
+td{padding:.45rem .8rem;border-bottom:1px solid #e0e0e0}
+tr:hover td{background:#fafafa}
+pre{background:#1e1e2e;color:#f8f8f2;padding:1rem 1.2rem;border-radius:6px;overflow-x:auto;margin:1rem 0;font-size:.85rem;line-height:1.5}
+code{font-family:'SFMono-Regular',Consolas,monospace;font-size:.88em}
+p code,li code,td code{background:#eee;padding:.1em .35em;border-radius:3px;color:#c0392b}
+blockquote{border-left:3px solid #e74c3c;padding:.5rem 1rem;color:#555;background:#fff8f8;margin:1rem 0}
+hr{border:none;border-top:1px solid #ddd;margin:1.5rem 0}
+img{max-width:100%;height:auto;border-radius:6px;border:1px solid #e0e0e0;margin:.5rem 0}
+.subscribe-box{margin-top:3rem;padding:1.5rem;background:#fff8f8;border:1px solid #f5c6c6;border-radius:8px;text-align:center}
+.subscribe-label{font-size:.9rem;font-weight:600;color:#c0392b;margin-bottom:.75rem}
+.footer{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #e0e0e0;font-size:.82rem;color:#999}
+.footer a{color:#999}
+.footer a:hover{color:#c0392b}
+.topbar{display:none;align-items:center;gap:.75rem;background:#1e1e2e;padding:.75rem 1rem;position:sticky;top:0;z-index:100}
+.topbar-logo{font-size:1rem;font-weight:700;color:#fff}
+.topbar-logo span{color:#e74c3c}
+.burger{background:none;border:none;cursor:pointer;padding:.25rem;display:flex;flex-direction:column;gap:5px}
+.burger span{display:block;width:22px;height:2px;background:#bbb;border-radius:2px;transition:background .2s}
+.burger:hover span{background:#fff}
+.drawer{position:fixed;inset:0;z-index:200;display:none}
+.drawer.open{display:block}
+.drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.drawer-panel{position:absolute;left:0;top:0;bottom:0;width:260px;background:#1e1e2e;overflow-y:auto;padding:1rem 0;transform:translateX(-100%);transition:transform .25s ease}
+.drawer.open .drawer-panel{transform:translateX(0)}
+.drawer-close{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1.2rem 1rem;border-bottom:1px solid #333;margin-bottom:.25rem}
+.drawer-close .logo{font-size:1rem;font-weight:700;color:#fff}
+.drawer-close .logo span{color:#e74c3c}
+.drawer-close button{background:none;border:none;color:#888;font-size:1.3rem;cursor:pointer;line-height:1}
+.drawer-close button:hover{color:#fff}
+@media(max-width:700px){.sidebar{display:none}.content{padding:1.5rem}.topbar{display:flex}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="burger" onclick="openDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-logo">⚡ <span>Shuriken</span></div>
+</div>
+<div class="drawer" id="drawer" onclick="handleDrawerClick(event)">
+  <div class="drawer-backdrop"></div>
+  <div class="drawer-panel">
+    <div class="drawer-close">
+      <div class="logo">⚡ <span>Shuriken</span></div>
+      <button onclick="closeDrawer()" aria-label="Tutup">✕</button>
+    </div>
+    <a href="index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link active" style="padding-left:1.2rem">Konfigurasi</a>
+  </div>
+</div>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-logo">⚡ <span>Shuriken</span></div>
+  <a href="index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link active" style="padding-left:1.2rem">Konfigurasi</a>
+</aside>
+<main class="content">
+<h1><a id="content-konfigurasi" href="#content-konfigurasi" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Konfigurasi</h1>
+<p>Semua konfigurasi Shuriken ada di folder <code>config/</code>. Nilai default bisa di-override via CLI option.</p>
+<hr />
+<h2><a id="content-configaiphp" href="#content-configaiphp" class="heading-permalink" aria-hidden="true" title="Permalink"></a>config/ai.php</h2>
+<p>Konfigurasi untuk semua AI provider.</p>
+<h3><a id="content-imagecount" href="#content-imagecount" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>image_count</code></h3>
+<p>Jumlah gambar yang disertakan dalam prompt AI (bukan jumlah gambar yang di-scrape).</p>
+<pre><code class="language-php">'image_count' =&gt; 2,
+</code></pre>
+<h3><a id="content-tones" href="#content-tones" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>tones</code></h3>
+<p>Daftar gaya penulisan yang dipilih secara acak per generate:</p>
+<pre><code class="language-php">'tones' =&gt; ['personal', 'professional', 'engaging', 'black', 'white', 'asian', 'funny'],
+</code></pre>
+<h3><a id="content-token-provider" href="#content-token-provider" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Token Provider</h3>
+<p>Token <strong>tidak perlu diedit di file ini</strong> — gunakan command <code>token</code>:</p>
+<pre><code class="language-bash">php shuriken token add openai sk-proj-...
+php shuriken token add groq gsk_...
+php shuriken token list
+</code></pre>
+<p>Token disimpan di <code>storage/tokens.json</code> dan dimuat otomatis saat startup. Bisa tambah lebih dari satu token per provider — Shuriken akan round-robin otomatis. Lihat referensi lengkap: <a href="commands/token.html">token</a>.</p>
+<h3><a id="content-model-per-provider" href="#content-model-per-provider" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Model per Provider</h3>
+<p>Default model untuk setiap provider:</p>
+<pre><code class="language-php">'openai_options'      =&gt; ['model' =&gt; 'gpt-4.1-mini', 'max_tokens' =&gt; 1000],
+'gemini_options'      =&gt; ['model' =&gt; 'gemini-2.5-flash'],
+'claude_options'      =&gt; ['model' =&gt; 'claude-haiku-4-5', 'max_tokens' =&gt; 1024],
+'deepseek_options'    =&gt; ['model' =&gt; 'deepseek-chat'],
+'groq_options'        =&gt; ['model' =&gt; 'llama-3.3-70b-versatile'],
+'openrouter_options'  =&gt; ['model' =&gt; 'google/gemini-2.5-flash'],
+'kimi_options'        =&gt; ['model' =&gt; 'moonshot-v1-8k'],
+'grok_options'        =&gt; ['model' =&gt; 'grok-2-1212'],
+'mistral_options'     =&gt; ['model' =&gt; 'mistral-small-latest'],
+'together_options'    =&gt; ['model' =&gt; 'meta-llama/Llama-3-8b-instruct'],
+'perplexity_options'  =&gt; ['model' =&gt; 'llama-3.1-sonar-small-128k-online'],
+'fireworks_options'   =&gt; ['model' =&gt; 'accounts/fireworks/models/llama-v3p3-70b-instruct'],
+'cerebras_options'    =&gt; ['model' =&gt; 'llama-3.3-70b'],
+'siliconflow_options' =&gt; ['model' =&gt; 'Qwen/Qwen2.5-7B-Instruct'],
+'novita_options'      =&gt; ['model' =&gt; 'meta-llama/llama-3.3-70b-instruct'],
+</code></pre>
+<h3><a id="content-provider-lokal" href="#content-provider-lokal" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Provider Lokal</h3>
+<p>Tidak butuh token:</p>
+<pre><code class="language-php">'ollama_options'  =&gt; ['model' =&gt; 'llama3.2', 'base_url' =&gt; 'http://localhost:11434/v1'],
+'lmstudio_options' =&gt; ['model' =&gt; 'local-model', 'base_url' =&gt; 'http://localhost:1234/v1'],
+</code></pre>
+<h3><a id="content-cli-provider" href="#content-cli-provider" class="heading-permalink" aria-hidden="true" title="Permalink"></a>CLI Provider</h3>
+<pre><code class="language-php">'claude_cli_options' =&gt; ['command' =&gt; 'claude'],
+'gemini_cli_options' =&gt; ['command' =&gt; 'gemini'],
+</code></pre>
+<p>Untuk Windows atau custom path, ubah <code>command</code>-nya:</p>
+<pre><code class="language-php">'claude_cli_options' =&gt; ['command' =&gt; 'C:\\Users\\user\\AppData\\Roaming\\npm\\claude.cmd'],
+</code></pre>
+<hr />
+<h2><a id="content-configshurikenphp" href="#content-configshurikenphp" class="heading-permalink" aria-hidden="true" title="Permalink"></a>config/shuriken.php</h2>
+<p>Konfigurasi default untuk <code>image:scrape</code>.</p>
+<pre><code class="language-php">return [
+    'language'         =&gt; 'en',       // Kode bahasa
+    'country'          =&gt; 'us',       // Kode negara
+    'proxy'            =&gt; '',          // URL proxy (kosong = tidak pakai)
+    'max'              =&gt; 1000,        // Maksimal keyword
+    'preset'           =&gt; 'https://www.bing.com/images/search?q=',
+    'keywords_txt'     =&gt; false,       // Baca keyword dari keyword.txt
+    'keywords'         =&gt; false,       // Keyword dari CLI
+    'trends'           =&gt; false,       // Gunakan Google Trends
+    'append_query'     =&gt; '',          // Query tambahan di URL Bing
+    'image_count'      =&gt; 35,          // Jumlah gambar per keyword
+    'execute_javascript' =&gt; false,     // Jalankan JS (untuk image_count &gt; 9)
+    'concurrency'      =&gt; 5,           // Proses paralel
+    'requestDelay'     =&gt; 0,           // Delay antar request (ms)
+    'timeout'          =&gt; 30,          // Timeout per scrape (detik)
+    'ai'               =&gt; false,       // Aktifkan AI content generation
+    'provider'         =&gt; 'openai',    // Provider AI default
+    'memory_db'        =&gt; false,       // Gunakan in-memory SQLite
+    'prompt'           =&gt; 'image',     // Template prompt (image/recipe/list/review/faq/tutorial/comparison — atau custom)
+    'no_expand'        =&gt; false,       // Nonaktifkan keyword expansion
+    'suggest'          =&gt; false,       // Tambah keyword via Bing Suggest
+    'model'            =&gt; null,        // Override model AI (null = pakai default)
+];
+</code></pre>
+<p>Semua key di sini bisa di-override via CLI option. Contoh:</p>
+<pre><code class="language-bash"># Override dari CLI
+php shuriken image:scrape --language=id --country=id --concurrency=20
+</code></pre>
+<hr />
+<h2><a id="content-configexportphp" href="#content-configexportphp" class="heading-permalink" aria-hidden="true" title="Permalink"></a>config/export.php</h2>
+<p>Konfigurasi default untuk <code>image:export</code>.</p>
+<pre><code class="language-php">return [
+    'platform'               =&gt; 'wordpress',   // Platform export default
+    'category'               =&gt; 'Uncategorized',
+    'start'                  =&gt; Carbon::now()-&gt;subYear(), // 1 tahun lalu
+    'end'                    =&gt; Carbon::now(),             // Hari ini
+    'chunk'                  =&gt; 50000,          // Maksimal post per file
+    'theme'                  =&gt; 'default',      // Tema HTML
+    'site_name'              =&gt; '',             // Nama website (HTML)
+    'description'            =&gt; '',             // Deskripsi website (HTML)
+    'clear_post'             =&gt; false,          // Hapus exports/ sebelum export
+];
+</code></pre>
+<hr />
+<h2><a id="content-configpromptsphp" href="#content-configpromptsphp" class="heading-permalink" aria-hidden="true" title="Permalink"></a>config/prompts.php</h2>
+<p>Template prompt yang dikirim ke AI. Tujuh built-in template tersedia — plus custom prompt via <a href="commands/prompt.html"><code>prompt add</code></a>.</p>
+<table>
+<thead>
+<tr>
+<th>Nama</th>
+<th>Keterangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>image</code></td>
+<td>Blog post standar dengan gambar — <strong>default</strong></td>
+</tr>
+<tr>
+<td><code>recipe</code></td>
+<td>Resep dengan bahan (<code>ul</code>) dan langkah (<code>ol</code>)</td>
+</tr>
+<tr>
+<td><code>list</code></td>
+<td>Listicle 8-10 item dengan h2 + p</td>
+</tr>
+<tr>
+<td><code>review</code></td>
+<td>Ulasan produk — Pros, Cons, Verdict</td>
+</tr>
+<tr>
+<td><code>faq</code></td>
+<td>Tanya-jawab — min. 8 pertanyaan</td>
+</tr>
+<tr>
+<td><code>tutorial</code></td>
+<td>How-to dengan langkah &quot;Step N: title&quot;</td>
+</tr>
+<tr>
+<td><code>comparison</code></td>
+<td>Perbandingan aspek + Recommendation</td>
+</tr>
+<tr>
+<td><code>news</code></td>
+<td>Artikel berita — lead paragraph + konteks + implikasi</td>
+</tr>
+<tr>
+<td><code>roundup</code></td>
+<td>&quot;Best of&quot; affiliate — item bernomor + key features + top pick</td>
+</tr>
+<tr>
+<td><code>guide</code></td>
+<td>Panduan komprehensif — multi-section, min. 500 kata</td>
+</tr>
+</tbody>
+</table>
+<h3><a id="content-variabel-template" href="#content-variabel-template" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Variabel Template</h3>
+<table>
+<thead>
+<tr>
+<th>Variabel</th>
+<th>Nilai</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{{images_json}}</code></td>
+<td>JSON array gambar (URL + judul)</td>
+</tr>
+<tr>
+<td><code>{{keyword}}</code></td>
+<td>Keyword yang sedang diproses</td>
+</tr>
+<tr>
+<td><code>{{tone}}</code></td>
+<td>Gaya penulisan (acak dari <code>ai.tones</code>)</td>
+</tr>
+<tr>
+<td><code>{{language}}</code></td>
+<td>Nilai dari config <code>shuriken.language</code></td>
+</tr>
+<tr>
+<td><code>{{country}}</code></td>
+<td>Nilai dari config <code>shuriken.country</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2><a id="content-urutan-prioritas-konfigurasi" href="#content-urutan-prioritas-konfigurasi" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Urutan Prioritas Konfigurasi</h2>
+<p>CLI option &gt; config file &gt; nilai default hardcoded.</p>
+<p>Contoh: <code>--language=id</code> di CLI akan override <code>'language' =&gt; 'en'</code> di <code>config/shuriken.php</code>.</p>
+
+<div class="subscribe-box">
+  <p class="subscribe-label">📬 Tips & update terbaru dari Internet Marketing Dojo</p>
+  <iframe src="https://imdojo.substack.com/embed" width="480" height="320" style="border:1px solid #EEE;background:white;max-width:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+<div class="footer"><a href="https://dojo.cx/shuriken" target="_blank">Shuriken</a> by <a href="https://imdojo.substack.com" target="_blank">Internet Marketing Dojo</a></div>
+</main>
+</div>
+<script>
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.body.style.overflow='hidden'}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.body.style.overflow=''}
+function handleDrawerClick(e){if(e.target.classList.contains('drawer-backdrop'))closeDrawer()}
+document.querySelectorAll('#drawer .nav-link').forEach(function(a){a.addEventListener('click',closeDrawer)})
+</script>
+<script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="08b4d506-ee5f-49d8-ab6a-b3d3196bc5c0";window.$crisp.push(["config","position:reverse",[false]]);(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Biaya AI — Shuriken</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:#222;background:#f5f5f5;line-height:1.7}
+a{color:#c0392b;text-decoration:none}
+a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:240px;flex-shrink:0;background:#1e1e2e;padding:1rem 0;overflow-y:auto;position:sticky;top:0;height:100vh}
+.sidebar-logo{padding:.75rem 1.2rem 1rem;font-size:1.1rem;font-weight:700;color:#fff;border-bottom:1px solid #333}
+.sidebar-logo span{color:#e74c3c}
+.nav-section{padding:.7rem 1.2rem .2rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666}
+.nav-link{display:block;padding:.35rem 1.2rem;color:#bbb;font-size:.88rem;transition:background .15s,color .15s}
+.nav-link:hover{background:#2a2a3e;color:#fff;text-decoration:none}
+.nav-link.active{color:#e74c3c;background:#2a2a3e;font-weight:600}
+.content{flex:1;min-width:0;padding:2.5rem 3rem;max-width:860px}
+h1{font-size:1.8rem;margin-bottom:1.2rem;padding-bottom:.5rem;border-bottom:2px solid #e74c3c;color:#111}
+h2{font-size:1.25rem;margin:2rem 0 .6rem;color:#111}
+h3{font-size:1rem;margin:1.5rem 0 .4rem;color:#333}
+p{margin:.6rem 0}
+ul,ol{margin:.5rem 0 .5rem 1.5rem}
+li{margin:.25rem 0}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.9rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+th{background:#1e1e2e;color:#fff;padding:.5rem .8rem;text-align:left}
+td{padding:.45rem .8rem;border-bottom:1px solid #e0e0e0}
+tr:hover td{background:#fafafa}
+pre{background:#1e1e2e;color:#f8f8f2;padding:1rem 1.2rem;border-radius:6px;overflow-x:auto;margin:1rem 0;font-size:.85rem;line-height:1.5}
+code{font-family:'SFMono-Regular',Consolas,monospace;font-size:.88em}
+p code,li code,td code{background:#eee;padding:.1em .35em;border-radius:3px;color:#c0392b}
+blockquote{border-left:3px solid #e74c3c;padding:.5rem 1rem;color:#555;background:#fff8f8;margin:1rem 0}
+hr{border:none;border-top:1px solid #ddd;margin:1.5rem 0}
+img{max-width:100%;height:auto;border-radius:6px;border:1px solid #e0e0e0;margin:.5rem 0}
+.subscribe-box{margin-top:3rem;padding:1.5rem;background:#fff8f8;border:1px solid #f5c6c6;border-radius:8px;text-align:center}
+.subscribe-label{font-size:.9rem;font-weight:600;color:#c0392b;margin-bottom:.75rem}
+.footer{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #e0e0e0;font-size:.82rem;color:#999}
+.footer a{color:#999}
+.footer a:hover{color:#c0392b}
+.topbar{display:none;align-items:center;gap:.75rem;background:#1e1e2e;padding:.75rem 1rem;position:sticky;top:0;z-index:100}
+.topbar-logo{font-size:1rem;font-weight:700;color:#fff}
+.topbar-logo span{color:#e74c3c}
+.burger{background:none;border:none;cursor:pointer;padding:.25rem;display:flex;flex-direction:column;gap:5px}
+.burger span{display:block;width:22px;height:2px;background:#bbb;border-radius:2px;transition:background .2s}
+.burger:hover span{background:#fff}
+.drawer{position:fixed;inset:0;z-index:200;display:none}
+.drawer.open{display:block}
+.drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.drawer-panel{position:absolute;left:0;top:0;bottom:0;width:260px;background:#1e1e2e;overflow-y:auto;padding:1rem 0;transform:translateX(-100%);transition:transform .25s ease}
+.drawer.open .drawer-panel{transform:translateX(0)}
+.drawer-close{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1.2rem 1rem;border-bottom:1px solid #333;margin-bottom:.25rem}
+.drawer-close .logo{font-size:1rem;font-weight:700;color:#fff}
+.drawer-close .logo span{color:#e74c3c}
+.drawer-close button{background:none;border:none;color:#888;font-size:1.3rem;cursor:pointer;line-height:1}
+.drawer-close button:hover{color:#fff}
+@media(max-width:700px){.sidebar{display:none}.content{padding:1.5rem}.topbar{display:flex}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="burger" onclick="openDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-logo">⚡ <span>Shuriken</span></div>
+</div>
+<div class="drawer" id="drawer" onclick="handleDrawerClick(event)">
+  <div class="drawer-backdrop"></div>
+  <div class="drawer-panel">
+    <div class="drawer-close">
+      <div class="logo">⚡ <span>Shuriken</span></div>
+      <button onclick="closeDrawer()" aria-label="Tutup">✕</button>
+    </div>
+    <a href="index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link active" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+  </div>
+</div>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-logo">⚡ <span>Shuriken</span></div>
+  <a href="index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link active" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+</aside>
+<main class="content">
+<h1><a id="content-panduan-biaya-ai" href="#content-panduan-biaya-ai" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Panduan Biaya AI</h1>
+<p>Untuk produksi konten massal dengan biaya serendah mungkin, pilihan provider sangat menentukan. Berikut breakdown lengkapnya.</p>
+<h2><a id="content-perbandingan-biaya-per-1-juta-token" href="#content-perbandingan-biaya-per-1-juta-token" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Perbandingan Biaya (per 1 juta token)</h2>
+<blockquote>
+<p>Harga perkiraan per Maret 2026. Cek halaman resmi masing-masing provider untuk harga terkini.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Model Default</th>
+<th>Input</th>
+<th>Output</th>
+<th>Estimasi per 1.000 artikel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ollama</strong></td>
+<td>llama3.2</td>
+<td>Gratis</td>
+<td>Gratis</td>
+<td>Gratis</td>
+</tr>
+<tr>
+<td><strong>Groq</strong></td>
+<td>llama-3.3-70b-versatile</td>
+<td>Gratis*</td>
+<td>Gratis*</td>
+<td>Gratis</td>
+</tr>
+<tr>
+<td><strong>claude-cli</strong></td>
+<td>(via subscription)</td>
+<td>~$20/bln flat</td>
+<td>—</td>
+<td>Gratis per artikel</td>
+</tr>
+<tr>
+<td><strong>gemini-cli</strong></td>
+<td>(via subscription)</td>
+<td>~$20/bln flat</td>
+<td>—</td>
+<td>Gratis per artikel</td>
+</tr>
+<tr>
+<td><strong>Together AI</strong></td>
+<td>Llama-3-8b-instruct</td>
+<td>~$0.10</td>
+<td>~$0.10</td>
+<td>~$0.30–$0.50</td>
+</tr>
+<tr>
+<td><strong>Mistral</strong></td>
+<td>mistral-small-latest</td>
+<td>~$0.20</td>
+<td>~$0.60</td>
+<td>~$1–$2</td>
+</tr>
+<tr>
+<td><strong>Gemini</strong></td>
+<td>gemini-2.5-flash</td>
+<td>~$0.10</td>
+<td>~$0.40</td>
+<td>~$0.80–$1.50</td>
+</tr>
+<tr>
+<td><strong>DeepSeek</strong></td>
+<td>deepseek-chat</td>
+<td>~$0.28</td>
+<td>~$0.42</td>
+<td>~$1–$2</td>
+</tr>
+<tr>
+<td><strong>Groq (bayar)</strong></td>
+<td>llama-3.3-70b</td>
+<td>~$0.59</td>
+<td>~$0.79</td>
+<td>~$1–$2</td>
+</tr>
+<tr>
+<td><strong>OpenRouter</strong></td>
+<td>gemini-2.5-flash</td>
+<td>~$0.10</td>
+<td>~$0.40</td>
+<td>~$0.80–$1.50</td>
+</tr>
+<tr>
+<td><strong>Kimi</strong></td>
+<td>moonshot-v1-8k</td>
+<td>~$0.20</td>
+<td>~$2.00</td>
+<td>~$2–$5</td>
+</tr>
+<tr>
+<td><strong>OpenAI</strong></td>
+<td>gpt-4.1-mini</td>
+<td>~$0.40</td>
+<td>~$1.60</td>
+<td>~$2–$5</td>
+</tr>
+<tr>
+<td><strong>Perplexity</strong></td>
+<td>sonar</td>
+<td>~$1.00</td>
+<td>~$1.00</td>
+<td>~$3–$5</td>
+</tr>
+<tr>
+<td><strong>Claude</strong></td>
+<td>claude-haiku-4-5</td>
+<td>~$1.00</td>
+<td>~$5.00</td>
+<td>~$6–$12</td>
+</tr>
+<tr>
+<td><strong>Grok</strong></td>
+<td>grok-2-1212</td>
+<td>~$2.00</td>
+<td>~$10.00</td>
+<td>~$15–$25</td>
+</tr>
+</tbody>
+</table>
+<p>*Groq free tier ada rate limit (harian/per menit). Cukup untuk volume sedang.</p>
+<hr />
+<h2><a id="content-tier-rekomendasi" href="#content-tier-rekomendasi" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Tier Rekomendasi</h2>
+<h3><a id="content-tier-1--gratis-budget-0" href="#content-tier-1--gratis-budget-0" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Tier 1 — Gratis (Budget: $0)</h3>
+<p><strong>Terbaik untuk: Eksperimen, development, volume kecil-menengah</strong></p>
+<h4><a id="content-ollama-lokal" href="#content-ollama-lokal" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Ollama (Lokal)</h4>
+<ul>
+<li>Install sekali, pakai selamanya tanpa biaya</li>
+<li><strong>Rekomendasi Utama</strong>: Model <strong>Gemma 4</strong> (<code>gemma4:2b</code>) terbukti paling pintar dalam menulis dan menjaga format HTML meskipun dijalankan di laptop berspesifikasi pas-pasan (&quot;laptop kentang&quot;).</li>
+<li>Model <code>llama3.2</code> (1B/3B) sangat kencang untuk artikel singkat</li>
+<li>Model <code>mistral</code> atau <code>llama3.1:8b</code> untuk kualitas maksimal jika komputer punya GPU/RAM memadai</li>
+<li><strong>Limitasi</strong>: Kecepatan murni tergantung pada spesifikasi hardware Anda.</li>
+</ul>
+<pre><code class="language-bash">ollama pull gemma4:2b
+php shuriken image:scrape --ai --provider=ollama --model=gemma4:2b --concurrency=3
+</code></pre>
+<h4><a id="content-groq-free-tier" href="#content-groq-free-tier" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Groq Free Tier</h4>
+<ul>
+<li>API gratis dengan rate limit harian</li>
+<li>Model llama-3.3-70b-versatile — kualitas sangat baik untuk gratis</li>
+<li><strong>Limitasi</strong>: ~14.400 token/menit, ~500.000 token/hari (cek docs Groq)</li>
+</ul>
+<pre><code class="language-bash">php shuriken image:scrape --ai --provider=groq --concurrency=5
+</code></pre>
+<h4><a id="content-claude-cli--gemini-cli" href="#content-claude-cli--gemini-cli" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Claude CLI / Gemini CLI</h4>
+<ul>
+<li>Pakai subscription yang sudah ada ($20/bulan)</li>
+<li>Tidak ada biaya per token — cost flat</li>
+<li>Kualitas tertinggi (Claude) atau sangat baik (Gemini)</li>
+<li><strong>Limitasi</strong>: Ada usage limit per hari, tidak cocok untuk volume sangat tinggi</li>
+</ul>
+<p>Install dan login CLI terlebih dahulu (sekali saja):</p>
+<pre><code class="language-bash"># Claude CLI — butuh Claude Max/Pro subscription
+npm install -g @anthropic-ai/claude-code
+claude  # ikuti proses login di browser
+</code></pre>
+<pre><code class="language-bash"># Gemini CLI — butuh Google One AI Premium subscription
+npm install -g @google/gemini-cli
+gemini  # ikuti proses login di browser
+</code></pre>
+<pre><code class="language-bash">php shuriken image:scrape --ai --provider=claude-cli
+php shuriken image:scrape --ai --provider=gemini-cli
+</code></pre>
+<p>Lihat <a href="ai-providers.html">AI Providers</a> untuk detail konfigurasi.</p>
+<hr />
+<h3><a id="content-tier-2--murah-budget-5-per-1000-artikel" href="#content-tier-2--murah-budget-5-per-1000-artikel" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Tier 2 — Murah (Budget: &lt;$5 per 1.000 artikel)</h3>
+<p><strong>Terbaik untuk: Produksi massal, konten berkualitas cukup</strong></p>
+<h4><a id="content-deepseek-paling-direkomendasikan" href="#content-deepseek-paling-direkomendasikan" class="heading-permalink" aria-hidden="true" title="Permalink"></a>DeepSeek (Paling Direkomendasikan)</h4>
+<ul>
+<li>Harga termurah di antara API berbayar</li>
+<li>Kualitas sangat baik untuk harganya</li>
+<li>Model <code>deepseek-chat</code> sudah cukup untuk artikel blog</li>
+</ul>
+<pre><code class="language-bash">php shuriken image:scrape --ai --provider=deepseek --concurrency=15
+</code></pre>
+<h4><a id="content-gemini-flash-via-gemini-api" href="#content-gemini-flash-via-gemini-api" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Gemini Flash (via Gemini API)</h4>
+<ul>
+<li>Harga sangat kompetitif</li>
+<li>Kecepatan tinggi, cocok untuk volume besar</li>
+<li>Google infrastructure — uptime tinggi</li>
+</ul>
+<pre><code class="language-bash">php shuriken image:scrape --ai --provider=gemini --concurrency=10
+</code></pre>
+<h4><a id="content-mistral-small" href="#content-mistral-small" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Mistral Small</h4>
+<ul>
+<li>Alternatif Eropa yang GDPR-compliant</li>
+<li>Kualitas solid, harga bersaing</li>
+</ul>
+<pre><code class="language-bash">php shuriken image:scrape --ai --provider=mistral --concurrency=10
+</code></pre>
+<hr />
+<h3><a id="content-tier-3--premium-budget-tidak-terbatas" href="#content-tier-3--premium-budget-tidak-terbatas" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Tier 3 — Premium (Budget: Tidak terbatas)</h3>
+<p><strong>Terbaik untuk: Konten berkualitas tinggi, niche kompetitif</strong></p>
+<h4><a id="content-claude-haiku-via-api" href="#content-claude-haiku-via-api" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Claude Haiku (via API)</h4>
+<ul>
+<li>Kualitas tulisan terbaik</li>
+<li>Cocok untuk niche yang butuh konten sangat natural</li>
+</ul>
+<pre><code class="language-bash">php shuriken image:scrape --ai --provider=claude --model=claude-haiku-4-5
+</code></pre>
+<h4><a id="content-openai-gpt-41-mini" href="#content-openai-gpt-41-mini" class="heading-permalink" aria-hidden="true" title="Permalink"></a>OpenAI GPT-4.1-mini</h4>
+<ul>
+<li>Standar industri, kualitas konsisten</li>
+<li>Ekosistem terlengkap</li>
+</ul>
+<pre><code class="language-bash">php shuriken image:scrape --ai --provider=openai
+</code></pre>
+<hr />
+<h2><a id="content-strategi-produksi-massal" href="#content-strategi-produksi-massal" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Strategi Produksi Massal</h2>
+<h3><a id="content-strategi-a-zero-cost-gratis-total" href="#content-strategi-a-zero-cost-gratis-total" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Strategi A: Zero Cost (Gratis Total)</h3>
+<p>Gunakan Groq untuk produksi + Ollama sebagai fallback:</p>
+<pre><code class="language-bash"># Produksi utama dengan Groq (gratis, cepat)
+php shuriken image:scrape \
+    --trends=id \
+    --max=500 \
+    --ai \
+    --provider=groq \
+    --concurrency=10 \
+    --memory_db
+
+# Jika rate limit Groq tercapai, beralih ke Ollama
+php shuriken image:scrape \
+    --trends=id \
+    --max=500 \
+    --ai \
+    --provider=ollama \
+    --concurrency=3
+</code></pre>
+<h3><a id="content-strategi-b-budget-minimal-10bulan" href="#content-strategi-b-budget-minimal-10bulan" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Strategi B: Budget Minimal (&lt;$10/bulan)</h3>
+<p>DeepSeek untuk bulk, Claude CLI untuk konten premium:</p>
+<pre><code class="language-bash"># Artikel massal dengan DeepSeek
+php shuriken image:scrape --trends=id --max=1000 --ai --provider=deepseek
+
+# Artikel niche/kompetitif dengan Claude CLI (pakai subscription)
+php shuriken image:scrape --keywords=&quot;keyword premium&quot; --ai --provider=claude-cli
+</code></pre>
+<h3><a id="content-strategi-c-kualitas-maksimal" href="#content-strategi-c-kualitas-maksimal" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Strategi C: Kualitas Maksimal</h3>
+<p>Gunakan OpenRouter untuk akses ke banyak model dengan 1 key:</p>
+<pre><code class="language-bash"># Model murah untuk draft
+php shuriken image:scrape --ai --provider=openrouter \
+    --model=google/gemini-2.5-flash
+
+# Model premium untuk niche kompetitif
+php shuriken image:scrape --ai --provider=openrouter \
+    --model=anthropic/claude-3-5-haiku
+</code></pre>
+<hr />
+<h2><a id="content-tips-hemat-biaya" href="#content-tips-hemat-biaya" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Tips Hemat Biaya</h2>
+<ol>
+<li><strong>Pakai <code>--memory_db</code></strong> untuk scraping cepat — kurangi overhead I/O, proses lebih efisien</li>
+<li><strong>Pakai <code>--concurrency</code> tinggi dengan Groq</strong> — Groq sangat cepat (ratusan token/detik)</li>
+<li><strong>Rotasi multiple token</strong> — daftarkan beberapa API key via <code>php shuriken token add</code> untuk menghindari rate limit tanpa harus upgrade plan</li>
+<li><strong>Pakai prompt <code>list</code></strong> — lebih sedikit token digunakan vs prompt <code>image</code></li>
+<li><strong>Batasi <code>--image_count</code></strong> — semakin sedikit gambar, semakin pendek prompt, semakin hemat token</li>
+</ol>
+<pre><code class="language-bash"># Paling hemat token
+php shuriken image:scrape --ai --provider=deepseek --prompt=list --image_count=5
+</code></pre>
+<hr />
+<h2><a id="content-kesimpulan-rekomendasi" href="#content-kesimpulan-rekomendasi" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Kesimpulan Rekomendasi</h2>
+<table>
+<thead>
+<tr>
+<th>Kebutuhan</th>
+<th>Provider Terbaik</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gratis, volume kecil</td>
+<td>Groq free tier</td>
+</tr>
+<tr>
+<td>Gratis, unlimited</td>
+<td>Ollama (lokal)</td>
+</tr>
+<tr>
+<td>Punya Claude/Gemini subscription</td>
+<td>claude-cli / gemini-cli</td>
+</tr>
+<tr>
+<td>Murah, volume besar</td>
+<td>DeepSeek</td>
+</tr>
+<tr>
+<td>Kualitas bagus, harga wajar</td>
+<td>Gemini Flash</td>
+</tr>
+<tr>
+<td>Kualitas terbaik</td>
+<td>Claude Haiku via API</td>
+</tr>
+<tr>
+<td>1 key untuk banyak model</td>
+<td>OpenRouter</td>
+</tr>
+</tbody>
+</table>
+
+<div class="subscribe-box">
+  <p class="subscribe-label">📬 Tips & update terbaru dari Internet Marketing Dojo</p>
+  <iframe src="https://imdojo.substack.com/embed" width="480" height="320" style="border:1px solid #EEE;background:white;max-width:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+<div class="footer"><a href="https://dojo.cx/shuriken" target="_blank">Shuriken</a> by <a href="https://imdojo.substack.com" target="_blank">Internet Marketing Dojo</a></div>
+</main>
+</div>
+<script>
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.body.style.overflow='hidden'}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.body.style.overflow=''}
+function handleDrawerClick(e){if(e.target.classList.contains('drawer-backdrop'))closeDrawer()}
+document.querySelectorAll('#drawer .nav-link').forEach(function(a){a.addEventListener('click',closeDrawer)})
+</script>
+<script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="08b4d506-ee5f-49d8-ab6a-b3d3196bc5c0";window.$crisp.push(["config","position:reverse",[false]]);(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Study: Niche PFP (Profile Picture) — Trafik Tier 1 + Adsterra — Shuriken</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:#222;background:#f5f5f5;line-height:1.7}
+a{color:#c0392b;text-decoration:none}
+a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:240px;flex-shrink:0;background:#1e1e2e;padding:1rem 0;overflow-y:auto;position:sticky;top:0;height:100vh}
+.sidebar-logo{padding:.75rem 1.2rem 1rem;font-size:1.1rem;font-weight:700;color:#fff;border-bottom:1px solid #333}
+.sidebar-logo span{color:#e74c3c}
+.nav-section{padding:.7rem 1.2rem .2rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666}
+.nav-link{display:block;padding:.35rem 1.2rem;color:#bbb;font-size:.88rem;transition:background .15s,color .15s}
+.nav-link:hover{background:#2a2a3e;color:#fff;text-decoration:none}
+.nav-link.active{color:#e74c3c;background:#2a2a3e;font-weight:600}
+.content{flex:1;min-width:0;padding:2.5rem 3rem;max-width:860px}
+h1{font-size:1.8rem;margin-bottom:1.2rem;padding-bottom:.5rem;border-bottom:2px solid #e74c3c;color:#111}
+h2{font-size:1.25rem;margin:2rem 0 .6rem;color:#111}
+h3{font-size:1rem;margin:1.5rem 0 .4rem;color:#333}
+p{margin:.6rem 0}
+ul,ol{margin:.5rem 0 .5rem 1.5rem}
+li{margin:.25rem 0}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.9rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+th{background:#1e1e2e;color:#fff;padding:.5rem .8rem;text-align:left}
+td{padding:.45rem .8rem;border-bottom:1px solid #e0e0e0}
+tr:hover td{background:#fafafa}
+pre{background:#1e1e2e;color:#f8f8f2;padding:1rem 1.2rem;border-radius:6px;overflow-x:auto;margin:1rem 0;font-size:.85rem;line-height:1.5}
+code{font-family:'SFMono-Regular',Consolas,monospace;font-size:.88em}
+p code,li code,td code{background:#eee;padding:.1em .35em;border-radius:3px;color:#c0392b}
+blockquote{border-left:3px solid #e74c3c;padding:.5rem 1rem;color:#555;background:#fff8f8;margin:1rem 0}
+hr{border:none;border-top:1px solid #ddd;margin:1.5rem 0}
+img{max-width:100%;height:auto;border-radius:6px;border:1px solid #e0e0e0;margin:.5rem 0}
+.subscribe-box{margin-top:3rem;padding:1.5rem;background:#fff8f8;border:1px solid #f5c6c6;border-radius:8px;text-align:center}
+.subscribe-label{font-size:.9rem;font-weight:600;color:#c0392b;margin-bottom:.75rem}
+.footer{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #e0e0e0;font-size:.82rem;color:#999}
+.footer a{color:#999}
+.footer a:hover{color:#c0392b}
+.topbar{display:none;align-items:center;gap:.75rem;background:#1e1e2e;padding:.75rem 1rem;position:sticky;top:0;z-index:100}
+.topbar-logo{font-size:1rem;font-weight:700;color:#fff}
+.topbar-logo span{color:#e74c3c}
+.burger{background:none;border:none;cursor:pointer;padding:.25rem;display:flex;flex-direction:column;gap:5px}
+.burger span{display:block;width:22px;height:2px;background:#bbb;border-radius:2px;transition:background .2s}
+.burger:hover span{background:#fff}
+.drawer{position:fixed;inset:0;z-index:200;display:none}
+.drawer.open{display:block}
+.drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.drawer-panel{position:absolute;left:0;top:0;bottom:0;width:260px;background:#1e1e2e;overflow-y:auto;padding:1rem 0;transform:translateX(-100%);transition:transform .25s ease}
+.drawer.open .drawer-panel{transform:translateX(0)}
+.drawer-close{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1.2rem 1rem;border-bottom:1px solid #333;margin-bottom:.25rem}
+.drawer-close .logo{font-size:1rem;font-weight:700;color:#fff}
+.drawer-close .logo span{color:#e74c3c}
+.drawer-close button{background:none;border:none;color:#888;font-size:1.3rem;cursor:pointer;line-height:1}
+.drawer-close button:hover{color:#fff}
+@media(max-width:700px){.sidebar{display:none}.content{padding:1.5rem}.topbar{display:flex}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="burger" onclick="openDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-logo">⚡ <span>Shuriken</span></div>
+</div>
+<div class="drawer" id="drawer" onclick="handleDrawerClick(event)">
+  <div class="drawer-backdrop"></div>
+  <div class="drawer-panel">
+    <div class="drawer-close">
+      <div class="logo">⚡ <span>Shuriken</span></div>
+      <button onclick="closeDrawer()" aria-label="Tutup">✕</button>
+    </div>
+    <a href="index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link active" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+  </div>
+</div>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-logo">⚡ <span>Shuriken</span></div>
+  <a href="index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="case-study-pfp.html" class="nav-link active" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+</aside>
+<main class="content">
+<h1><a id="content-case-study-niche-pfp-profile-picture--trafik-tier-1--adsterra" href="#content-case-study-niche-pfp-profile-picture--trafik-tier-1--adsterra" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Case Study: Niche PFP (Profile Picture) — Trafik Tier 1 + Adsterra</h1>
+<blockquote>
+<p><strong>Studi kasus:</strong> Bangun site galeri profile picture, targetkan trafik global Tier 1, monetisasi dengan Adsterra — tanpa perlu AI, cukup template gallery khusus.</p>
+</blockquote>
+<hr />
+<h2><a id="content-overview" href="#content-overview" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Overview</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Niche</strong></td>
+<td>PFP / Profile Picture (aesthetic, anime, gaming, dll)</td>
+</tr>
+<tr>
+<td><strong>Target trafik</strong></td>
+<td>Global, Tier 1 (US, UK, AU, CA)</td>
+</tr>
+<tr>
+<td><strong>Tujuan</strong></td>
+<td>Passive income dari Adsterra</td>
+</tr>
+<tr>
+<td><strong>Tools</strong></td>
+<td><a href="https://dojo.cx/shuriken">Shuriken</a> + Cloudflare Pages + <a href="https://beta.publishers.adsterra.com/referral/hdKsY5N1yr">Adsterra</a></td>
+</tr>
+<tr>
+<td><strong>Estimasi waktu</strong></td>
+<td>&lt; 1 jam setup</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2><a id="content-kenapa-niche-ini" href="#content-kenapa-niche-ini" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Kenapa Niche Ini?</h2>
+<ul>
+<li>Volume keyword sangat besar — &quot;aesthetic pfp&quot;, &quot;anime pfp&quot;, &quot;dark pfp&quot;, &quot;pfp for [platform]&quot;</li>
+<li>Konten utamanya gambar — Shuriken scrape gambar dari Bing yang sudah relevan</li>
+<li><strong>Tidak butuh AI</strong> — template gallery khusus sudah cukup, hemat kuota API</li>
+<li>Trafik Tier 1 global, banyak dari sosmed dan image search</li>
+<li>Closely related ke niche nickname — bisa deploy ke domain yang sama</li>
+</ul>
+<hr />
+<h2><a id="content-step-1-siapkan-keyword" href="#content-step-1-siapkan-keyword" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Step 1: Siapkan Keyword</h2>
+<p>Gunakan <strong><a href="https://dojo.cx/keyword-tools/keywords-generator">Keywords Generator</a></strong> dengan seed <code>pfp</code>, <code>profile picture</code>, <code>profile pic</code>:</p>
+<p>Contoh <code>keywords.txt</code>:</p>
+<pre><code>aesthetic pfp
+anime pfp for girls
+dark aesthetic pfp
+cute pfp for discord
+pfp for instagram
+matching pfp for best friends
+anime pfp boy
+aesthetic pfp pink
+cool pfp for gaming
+pfp no face aesthetic
+cottagecore pfp
+y2k aesthetic pfp
+black and white pfp
+soft aesthetic pfp
+pfp ideas for tiktok
+</code></pre>
+<hr />
+<h2><a id="content-step-2-scrape--generate" href="#content-step-2-scrape--generate" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Step 2: Scrape &amp; Generate</h2>
+<p>Tidak perlu <code>--ai</code> — cukup scrape gambar dan gunakan template gallery khusus:</p>
+<pre><code class="language-bash">php shuriken image:scrape \
+  --keywords_txt \
+  --template=pfp \
+  --language=en \
+  --country=us \
+  --image_count=9 \
+  --concurrency=5
+</code></pre>
+<p><strong>Penjelasan flag:</strong></p>
+<ul>
+<li><code>--template=pfp</code> — gunakan template gallery khusus pfp, bukan template artikel biasa</li>
+<li><code>--image_count=9</code> — 9 gambar per keyword (tidak butuh <code>--execute_javascript</code>)</li>
+<li>Tidak ada <code>--ai</code> — hemat, cepat, tidak butuh token</li>
+</ul>
+<hr />
+<h2><a id="content-step-3-pasang-iklan-adsterra" href="#content-step-3-pasang-iklan-adsterra" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Step 3: Pasang Iklan Adsterra</h2>
+<p>Daftar di <strong><a href="https://beta.publishers.adsterra.com/referral/hdKsY5N1yr">Adsterra</a></strong> — langsung approved tanpa review period.</p>
+<p>Format yang cocok untuk niche visual:</p>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Slot</th>
+<th>Keterangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Social Bar</strong></td>
+<td><code>header.blade.php</code></td>
+<td>RPM tinggi, tidak ganggu gallery</td>
+</tr>
+<tr>
+<td><strong>Popunder</strong></td>
+<td><code>header.blade.php</code></td>
+<td>Trigger saat halaman dibuka</td>
+</tr>
+<tr>
+<td><strong>Native Banner</strong></td>
+<td><code>in_article.blade.php</code></td>
+<td>Di antara grid gambar</td>
+</tr>
+</tbody>
+</table>
+<pre><code>templates/export/html/_ads/header.blade.php
+templates/export/html/_ads/in_article.blade.php
+</code></pre>
+<hr />
+<h2><a id="content-step-4-export--deploy" href="#content-step-4-export--deploy" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Step 4: Export &amp; Deploy</h2>
+<h3><a id="content-pilihan-platform-deploy-gratis" href="#content-pilihan-platform-deploy-gratis" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Pilihan Platform Deploy Gratis</h3>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>URL hasil</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cloudflare Pages</strong></td>
+<td><code>aesthetic-pfp.pages.dev</code></td>
+</tr>
+<tr>
+<td><strong>Vercel</strong></td>
+<td><code>aesthetic-pfp.vercel.app</code></td>
+</tr>
+<tr>
+<td><strong>Netlify</strong></td>
+<td><code>aesthetic-pfp.netlify.app</code></td>
+</tr>
+<tr>
+<td><strong>GitHub Pages</strong></td>
+<td><code>{owner}.github.io/{repo}</code></td>
+</tr>
+<tr>
+<td><strong>Surge</strong></td>
+<td><code>aesthetic-pfp.surge.sh</code></td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash"># Daftarkan site
+php shuriken site add pfp cloudflare-pages {account_id} aesthetic-pfp {api_token}
+
+# Export
+php shuriken image:export \
+  --platform=html \
+  --theme=eight \
+  --site_name=&quot;Aesthetic PFP&quot; \
+  --site=pfp
+
+# Deploy
+php shuriken site:deploy --site=pfp
+</code></pre>
+<blockquote>
+<p>Kalau subdomain sudah diambil orang lain, lihat <a href="../commands/site-deploy.html#content-subdomain-sudah-diambil">tips memilih nama subdomain</a>.</p>
+</blockquote>
+<hr />
+<h2><a id="content-step-5-indexing" href="#content-step-5-indexing" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Step 5: Indexing</h2>
+<pre><code>https://aesthetic-pfp.pages.dev/sitemap.xml
+</code></pre>
+<p>Daftarkan ke <strong><a href="https://nerd.dojo.cx">nerd.dojo.cx</a></strong>.</p>
+<hr />
+<h2><a id="content-hasil-yang-diharapkan" href="#content-hasil-yang-diharapkan" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Hasil yang Diharapkan</h2>
+<p>Mulai dengan <strong>300–500 artikel</strong>, tambah bertahap.</p>
+<h3><a id="content-batas-jumlah-file-per-platform" href="#content-batas-jumlah-file-per-platform" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Batas Jumlah File per Platform</h3>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Limit file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cloudflare Pages</strong></td>
+<td>20.000 file per deployment</td>
+</tr>
+<tr>
+<td><strong>Vercel</strong></td>
+<td>10.000 file per deployment</td>
+</tr>
+<tr>
+<td><strong>Netlify</strong></td>
+<td>Tidak terbatas</td>
+</tr>
+<tr>
+<td><strong>GitHub Pages</strong></td>
+<td>Repo max 1GB</td>
+</tr>
+<tr>
+<td><strong>Surge</strong></td>
+<td>Tidak terbatas</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash">php shuriken image:export --platform=html --theme=eight --site=pfp --chunk=500
+</code></pre>
+<p>Dengan trafik Tier 1:</p>
+<ul>
+<li>Trafik dari Google Image Search dan Pinterest bisa signifikan</li>
+<li>RPM Adsterra lebih tinggi dibanding trafik Indonesia</li>
+<li>Proses scraping lebih cepat karena tidak pakai AI</li>
+</ul>
+<hr />
+<h2><a id="content-tidak-harus-bahasa-inggris" href="#content-tidak-harus-bahasa-inggris" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Tidak Harus Bahasa Inggris</h2>
+<table>
+<thead>
+<tr>
+<th>Bahasa</th>
+<th>Flag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Jerman</td>
+<td><code>--language=de --country=de</code></td>
+</tr>
+<tr>
+<td>Prancis</td>
+<td><code>--language=fr --country=fr</code></td>
+</tr>
+<tr>
+<td>Belanda</td>
+<td><code>--language=nl --country=nl</code></td>
+</tr>
+<tr>
+<td>Spanyol (Spanyol)</td>
+<td><code>--language=es --country=es</code></td>
+</tr>
+<tr>
+<td>Portugis (Portugal)</td>
+<td><code>--language=pt --country=pt</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2><a id="content-template-kustom" href="#content-template-kustom" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Template Kustom</h2>
+<p>Template <code>pfp</code> yang dipakai di case study ini adalah contoh dari <strong>custom content template</strong> — kamu bisa membuat template sendiri untuk layout apapun tanpa mengubah kode inti Shuriken.</p>
+<p>Pelajari cara membuat custom template: <a href="../custom-templates.html">Custom Content Templates</a></p>
+<hr />
+<h2><a id="content-tips" href="#content-tips" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Tips</h2>
+<p><strong>Gabungkan dengan niche nickname</strong> — site pfp dan nickname targetkan audience yang sama (gamer, pengguna sosmed). Bisa deploy keduanya ke domain berbeda dari 1 workflow.</p>
+<p><strong>Perluas ke niche serupa:</strong></p>
+<pre><code>wallpaper aesthetic     — &quot;aesthetic wallpaper [tema]&quot;
+banner for youtube      — &quot;youtube banner [tema]&quot;
+icon for discord        — &quot;discord server icon [tema]&quot;
+</code></pre>
+
+<div class="subscribe-box">
+  <p class="subscribe-label">📬 Tips & update terbaru dari Internet Marketing Dojo</p>
+  <iframe src="https://imdojo.substack.com/embed" width="480" height="320" style="border:1px solid #EEE;background:white;max-width:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+<div class="footer"><a href="https://dojo.cx/shuriken" target="_blank">Shuriken</a> by <a href="https://imdojo.substack.com" target="_blank">Internet Marketing Dojo</a></div>
+</main>
+</div>
+<script>
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.body.style.overflow='hidden'}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.body.style.overflow=''}
+function handleDrawerClick(e){if(e.target.classList.contains('drawer-backdrop'))closeDrawer()}
+document.querySelectorAll('#drawer .nav-link').forEach(function(a){a.addEventListener('click',closeDrawer)})
+</script>
+<script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="08b4d506-ee5f-49d8-ab6a-b3d3196bc5c0";window.$crisp.push(["config","position:reverse",[false]]);(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>
+</body>
+</html>

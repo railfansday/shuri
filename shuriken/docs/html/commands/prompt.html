@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>prompt — Shuriken</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:#222;background:#f5f5f5;line-height:1.7}
+a{color:#c0392b;text-decoration:none}
+a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:240px;flex-shrink:0;background:#1e1e2e;padding:1rem 0;overflow-y:auto;position:sticky;top:0;height:100vh}
+.sidebar-logo{padding:.75rem 1.2rem 1rem;font-size:1.1rem;font-weight:700;color:#fff;border-bottom:1px solid #333}
+.sidebar-logo span{color:#e74c3c}
+.nav-section{padding:.7rem 1.2rem .2rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666}
+.nav-link{display:block;padding:.35rem 1.2rem;color:#bbb;font-size:.88rem;transition:background .15s,color .15s}
+.nav-link:hover{background:#2a2a3e;color:#fff;text-decoration:none}
+.nav-link.active{color:#e74c3c;background:#2a2a3e;font-weight:600}
+.content{flex:1;min-width:0;padding:2.5rem 3rem;max-width:860px}
+h1{font-size:1.8rem;margin-bottom:1.2rem;padding-bottom:.5rem;border-bottom:2px solid #e74c3c;color:#111}
+h2{font-size:1.25rem;margin:2rem 0 .6rem;color:#111}
+h3{font-size:1rem;margin:1.5rem 0 .4rem;color:#333}
+p{margin:.6rem 0}
+ul,ol{margin:.5rem 0 .5rem 1.5rem}
+li{margin:.25rem 0}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.9rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+th{background:#1e1e2e;color:#fff;padding:.5rem .8rem;text-align:left}
+td{padding:.45rem .8rem;border-bottom:1px solid #e0e0e0}
+tr:hover td{background:#fafafa}
+pre{background:#1e1e2e;color:#f8f8f2;padding:1rem 1.2rem;border-radius:6px;overflow-x:auto;margin:1rem 0;font-size:.85rem;line-height:1.5}
+code{font-family:'SFMono-Regular',Consolas,monospace;font-size:.88em}
+p code,li code,td code{background:#eee;padding:.1em .35em;border-radius:3px;color:#c0392b}
+blockquote{border-left:3px solid #e74c3c;padding:.5rem 1rem;color:#555;background:#fff8f8;margin:1rem 0}
+hr{border:none;border-top:1px solid #ddd;margin:1.5rem 0}
+img{max-width:100%;height:auto;border-radius:6px;border:1px solid #e0e0e0;margin:.5rem 0}
+.subscribe-box{margin-top:3rem;padding:1.5rem;background:#fff8f8;border:1px solid #f5c6c6;border-radius:8px;text-align:center}
+.subscribe-label{font-size:.9rem;font-weight:600;color:#c0392b;margin-bottom:.75rem}
+.footer{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #e0e0e0;font-size:.82rem;color:#999}
+.footer a{color:#999}
+.footer a:hover{color:#c0392b}
+.topbar{display:none;align-items:center;gap:.75rem;background:#1e1e2e;padding:.75rem 1rem;position:sticky;top:0;z-index:100}
+.topbar-logo{font-size:1rem;font-weight:700;color:#fff}
+.topbar-logo span{color:#e74c3c}
+.burger{background:none;border:none;cursor:pointer;padding:.25rem;display:flex;flex-direction:column;gap:5px}
+.burger span{display:block;width:22px;height:2px;background:#bbb;border-radius:2px;transition:background .2s}
+.burger:hover span{background:#fff}
+.drawer{position:fixed;inset:0;z-index:200;display:none}
+.drawer.open{display:block}
+.drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.drawer-panel{position:absolute;left:0;top:0;bottom:0;width:260px;background:#1e1e2e;overflow-y:auto;padding:1rem 0;transform:translateX(-100%);transition:transform .25s ease}
+.drawer.open .drawer-panel{transform:translateX(0)}
+.drawer-close{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1.2rem 1rem;border-bottom:1px solid #333;margin-bottom:.25rem}
+.drawer-close .logo{font-size:1rem;font-weight:700;color:#fff}
+.drawer-close .logo span{color:#e74c3c}
+.drawer-close button{background:none;border:none;color:#888;font-size:1.3rem;cursor:pointer;line-height:1}
+.drawer-close button:hover{color:#fff}
+@media(max-width:700px){.sidebar{display:none}.content{padding:1.5rem}.topbar{display:flex}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="burger" onclick="openDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-logo">⚡ <span>Shuriken</span></div>
+</div>
+<div class="drawer" id="drawer" onclick="handleDrawerClick(event)">
+  <div class="drawer-backdrop"></div>
+  <div class="drawer-panel">
+    <div class="drawer-close">
+      <div class="logo">⚡ <span>Shuriken</span></div>
+      <button onclick="closeDrawer()" aria-label="Tutup">✕</button>
+    </div>
+    <a href="../index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="../installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="../quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="../ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="../ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="../export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="../html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="../monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="../commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="../commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="../commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="../commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="../commands/prompt.html" class="nav-link active" style="padding-left:1.2rem">prompt</a><a href="../commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="../commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="../commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="../commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="../case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="../case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="../case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="../case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="../case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="../case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="../case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="../custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="../faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="../configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+  </div>
+</div>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-logo">⚡ <span>Shuriken</span></div>
+  <a href="../index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="../installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="../quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="../ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="../ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="../export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="../html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="../monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="../commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="../commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="../commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="../commands/token.html" class="nav-link" style="padding-left:1.2rem">token</a><a href="../commands/prompt.html" class="nav-link active" style="padding-left:1.2rem">prompt</a><a href="../commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="../commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="../commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="../commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="../case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="../case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="../case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="../case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="../case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="../case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="../case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="../custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="../faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="../configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+</aside>
+<main class="content">
+<h1><a id="content-prompt" href="#content-prompt" class="heading-permalink" aria-hidden="true" title="Permalink"></a>prompt</h1>
+<p>Kelola custom prompt template — tambah, hapus, dan lihat daftar prompt yang tersedia.</p>
+<p>Prompt custom disimpan di <code>storage/prompts.json</code> dan otomatis tersedia saat scraping.</p>
+<hr />
+<h2><a id="content-subcommand" href="#content-subcommand" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Subcommand</h2>
+<h3><a id="content-prompt-list" href="#content-prompt-list" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>prompt list</code></h3>
+<p>Tampilkan semua prompt — built-in dan custom.</p>
+<pre><code class="language-bash">php shuriken prompt list
+</code></pre>
+<p>Output contoh:</p>
+<pre><code>Built-in Prompts
+──────────────────────────────────────────────────
+  image
+  recipe
+  list
+  review
+  faq
+  tutorial
+  comparison
+
+Custom Prompts
+──────────────────────────────────────────────────
+  properti   Write a property listing post about...
+  otomotif   Write a car review post about...
+
+Usage: php shuriken image:scrape --ai --prompt={name}
+</code></pre>
+<hr />
+<h3><a id="content-prompt-add" href="#content-prompt-add" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>prompt add</code></h3>
+<p>Tambahkan custom prompt baru.</p>
+<pre><code class="language-bash">php shuriken prompt add {name} {template}
+</code></pre>
+<ul>
+<li><code>name</code> — slug huruf kecil, boleh pakai tanda hubung (contoh: <code>properti</code>, <code>my-niche</code>)</li>
+<li><code>template</code> — teks prompt, boleh menggunakan variabel template</li>
+</ul>
+<p>Contoh:</p>
+<pre><code class="language-bash">php shuriken prompt add properti &quot;Write a property listing post about {{keyword}} in {{tone}} tone, language {{language}}_{{country}}, HTML format. Start with an introductory p. For each feature use an h2, img with alt tag, and p. End with a Contact h2. Do not include h1. Minimum 400 words.&quot;
+</code></pre>
+<p>Jika nama sudah ada, prompt akan di-overwrite.</p>
+<hr />
+<h3><a id="content-prompt-remove" href="#content-prompt-remove" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>prompt remove</code></h3>
+<p>Hapus custom prompt.</p>
+<pre><code class="language-bash">php shuriken prompt remove {name}
+</code></pre>
+<p>Contoh:</p>
+<pre><code class="language-bash">php shuriken prompt remove properti
+</code></pre>
+<p>Prompt built-in tidak bisa dihapus.</p>
+<hr />
+<h2><a id="content-variabel-template" href="#content-variabel-template" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Variabel Template</h2>
+<p>Gunakan variabel berikut dalam template prompt:</p>
+<table>
+<thead>
+<tr>
+<th>Variabel</th>
+<th>Nilai</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{{keyword}}</code></td>
+<td>Keyword yang sedang diproses</td>
+</tr>
+<tr>
+<td><code>{{images_json}}</code></td>
+<td>JSON array gambar (URL + judul)</td>
+</tr>
+<tr>
+<td><code>{{tone}}</code></td>
+<td>Gaya penulisan acak dari <code>ai.tones</code></td>
+</tr>
+<tr>
+<td><code>{{language}}</code></td>
+<td>Kode bahasa (contoh: <code>id</code>, <code>en</code>)</td>
+</tr>
+<tr>
+<td><code>{{country}}</code></td>
+<td>Kode negara (contoh: <code>id</code>, <code>us</code>)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2><a id="content-prompt-built-in" href="#content-prompt-built-in" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Prompt Built-in</h2>
+<h3><a id="content-image--blog-post-standar-dengan-gambar-default" href="#content-image--blog-post-standar-dengan-gambar-default" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>image</code> — Blog post standar dengan gambar <em>(default)</em></h3>
+<pre><code>intro p
+└── per gambar:
+    ├── h2 (heading terkait topik)
+    ├── img (dengan alt tag deskriptif)
+    └── p
+</code></pre>
+<h3><a id="content-recipe--resep-masakan" href="#content-recipe--resep-masakan" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>recipe</code> — Resep masakan</h3>
+<pre><code>intro p
+└── per section:
+    ├── h2
+    ├── img (dengan alt tag)
+    ├── p (deskripsi)
+    ├── ul (bahan-bahan)
+    └── ol (langkah memasak)
+</code></pre>
+<h3><a id="content-list--listicle" href="#content-list--listicle" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>list</code> — Listicle</h3>
+<pre><code>intro p
+└── 8–10 item:
+    ├── h2 (nomor + judul item)
+    └── p (penjelasan)
+</code></pre>
+<h3><a id="content-review--ulasan-produk" href="#content-review--ulasan-produk" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>review</code> — Ulasan produk</h3>
+<pre><code>intro p
+├── h2: Pros
+│   └── ul
+├── h2: Cons
+│   └── ul
+└── h2: Verdict
+    └── p
+</code></pre>
+<h3><a id="content-faq--tanya-jawab" href="#content-faq--tanya-jawab" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>faq</code> — Tanya jawab</h3>
+<pre><code>intro p
+└── min. 8 pertanyaan:
+    ├── h2 (pertanyaan)
+    └── p (jawaban)
+</code></pre>
+<h3><a id="content-tutorial--panduan-langkah-demi-langkah" href="#content-tutorial--panduan-langkah-demi-langkah" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>tutorial</code> — Panduan langkah demi langkah</h3>
+<pre><code>intro p (apa yang akan dipelajari)
+└── per langkah:
+    ├── h2: &quot;Step N: [judul]&quot;
+    ├── p (penjelasan)
+    └── img (opsional, dengan alt tag)
+</code></pre>
+<h3><a id="content-comparison--perbandingan" href="#content-comparison--perbandingan" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>comparison</code> — Perbandingan</h3>
+<pre><code>intro p
+├── per opsi/aspek:
+│   ├── h2
+│   ├── p
+│   └── img (opsional)
+└── h2: Recommendation
+    └── p
+</code></pre>
+<h3><a id="content-news--artikel-berita" href="#content-news--artikel-berita" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>news</code> — Artikel berita</h3>
+<pre><code>lead p (fakta utama)
+└── per section:
+    ├── h2 (konteks / detail / implikasi)
+    ├── p
+    └── img (opsional)
+</code></pre>
+<h3><a id="content-roundup--best-of--affiliate" href="#content-roundup--best-of--affiliate" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>roundup</code> — &quot;Best of&quot; / affiliate</h3>
+<pre><code>intro p
+├── per item:
+│   ├── h2 (nomor + nama)
+│   ├── img
+│   ├── p (deskripsi)
+│   └── ul (key features)
+└── h2: Recommendation
+    └── p (top pick)
+</code></pre>
+<h3><a id="content-guide--panduan-komprehensif" href="#content-guide--panduan-komprehensif" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>guide</code> — Panduan komprehensif</h3>
+<pre><code>intro p (apa yang akan dipelajari)
+├── per aspek:
+│   ├── h2
+│   ├── p (penjelasan detail)
+│   └── img (opsional)
+└── h2: Conclusion
+    └── p
+</code></pre>
+<hr />
+<h2><a id="content-penggunaan-di-imagescrape" href="#content-penggunaan-di-imagescrape" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Penggunaan di image:scrape</h2>
+<pre><code class="language-bash"># Pakai built-in prompt
+php shuriken image:scrape --ai --prompt=review
+
+# Pakai custom prompt
+php shuriken image:scrape --ai --prompt=properti
+</code></pre>
+
+<div class="subscribe-box">
+  <p class="subscribe-label">📬 Tips & update terbaru dari Internet Marketing Dojo</p>
+  <iframe src="https://imdojo.substack.com/embed" width="480" height="320" style="border:1px solid #EEE;background:white;max-width:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+<div class="footer"><a href="https://dojo.cx/shuriken" target="_blank">Shuriken</a> by <a href="https://imdojo.substack.com" target="_blank">Internet Marketing Dojo</a></div>
+</main>
+</div>
+<script>
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.body.style.overflow='hidden'}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.body.style.overflow=''}
+function handleDrawerClick(e){if(e.target.classList.contains('drawer-backdrop'))closeDrawer()}
+document.querySelectorAll('#drawer .nav-link').forEach(function(a){a.addEventListener('click',closeDrawer)})
+</script>
+<script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="08b4d506-ee5f-49d8-ab6a-b3d3196bc5c0";window.$crisp.push(["config","position:reverse",[false]]);(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>
+</body>
+</html>

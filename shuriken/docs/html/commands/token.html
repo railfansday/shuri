@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>token — Shuriken</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:#222;background:#f5f5f5;line-height:1.7}
+a{color:#c0392b;text-decoration:none}
+a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:240px;flex-shrink:0;background:#1e1e2e;padding:1rem 0;overflow-y:auto;position:sticky;top:0;height:100vh}
+.sidebar-logo{padding:.75rem 1.2rem 1rem;font-size:1.1rem;font-weight:700;color:#fff;border-bottom:1px solid #333}
+.sidebar-logo span{color:#e74c3c}
+.nav-section{padding:.7rem 1.2rem .2rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666}
+.nav-link{display:block;padding:.35rem 1.2rem;color:#bbb;font-size:.88rem;transition:background .15s,color .15s}
+.nav-link:hover{background:#2a2a3e;color:#fff;text-decoration:none}
+.nav-link.active{color:#e74c3c;background:#2a2a3e;font-weight:600}
+.content{flex:1;min-width:0;padding:2.5rem 3rem;max-width:860px}
+h1{font-size:1.8rem;margin-bottom:1.2rem;padding-bottom:.5rem;border-bottom:2px solid #e74c3c;color:#111}
+h2{font-size:1.25rem;margin:2rem 0 .6rem;color:#111}
+h3{font-size:1rem;margin:1.5rem 0 .4rem;color:#333}
+p{margin:.6rem 0}
+ul,ol{margin:.5rem 0 .5rem 1.5rem}
+li{margin:.25rem 0}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.9rem;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+th{background:#1e1e2e;color:#fff;padding:.5rem .8rem;text-align:left}
+td{padding:.45rem .8rem;border-bottom:1px solid #e0e0e0}
+tr:hover td{background:#fafafa}
+pre{background:#1e1e2e;color:#f8f8f2;padding:1rem 1.2rem;border-radius:6px;overflow-x:auto;margin:1rem 0;font-size:.85rem;line-height:1.5}
+code{font-family:'SFMono-Regular',Consolas,monospace;font-size:.88em}
+p code,li code,td code{background:#eee;padding:.1em .35em;border-radius:3px;color:#c0392b}
+blockquote{border-left:3px solid #e74c3c;padding:.5rem 1rem;color:#555;background:#fff8f8;margin:1rem 0}
+hr{border:none;border-top:1px solid #ddd;margin:1.5rem 0}
+img{max-width:100%;height:auto;border-radius:6px;border:1px solid #e0e0e0;margin:.5rem 0}
+.subscribe-box{margin-top:3rem;padding:1.5rem;background:#fff8f8;border:1px solid #f5c6c6;border-radius:8px;text-align:center}
+.subscribe-label{font-size:.9rem;font-weight:600;color:#c0392b;margin-bottom:.75rem}
+.footer{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #e0e0e0;font-size:.82rem;color:#999}
+.footer a{color:#999}
+.footer a:hover{color:#c0392b}
+.topbar{display:none;align-items:center;gap:.75rem;background:#1e1e2e;padding:.75rem 1rem;position:sticky;top:0;z-index:100}
+.topbar-logo{font-size:1rem;font-weight:700;color:#fff}
+.topbar-logo span{color:#e74c3c}
+.burger{background:none;border:none;cursor:pointer;padding:.25rem;display:flex;flex-direction:column;gap:5px}
+.burger span{display:block;width:22px;height:2px;background:#bbb;border-radius:2px;transition:background .2s}
+.burger:hover span{background:#fff}
+.drawer{position:fixed;inset:0;z-index:200;display:none}
+.drawer.open{display:block}
+.drawer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.drawer-panel{position:absolute;left:0;top:0;bottom:0;width:260px;background:#1e1e2e;overflow-y:auto;padding:1rem 0;transform:translateX(-100%);transition:transform .25s ease}
+.drawer.open .drawer-panel{transform:translateX(0)}
+.drawer-close{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1.2rem 1rem;border-bottom:1px solid #333;margin-bottom:.25rem}
+.drawer-close .logo{font-size:1rem;font-weight:700;color:#fff}
+.drawer-close .logo span{color:#e74c3c}
+.drawer-close button{background:none;border:none;color:#888;font-size:1.3rem;cursor:pointer;line-height:1}
+.drawer-close button:hover{color:#fff}
+@media(max-width:700px){.sidebar{display:none}.content{padding:1.5rem}.topbar{display:flex}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="burger" onclick="openDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-logo">⚡ <span>Shuriken</span></div>
+</div>
+<div class="drawer" id="drawer" onclick="handleDrawerClick(event)">
+  <div class="drawer-backdrop"></div>
+  <div class="drawer-panel">
+    <div class="drawer-close">
+      <div class="logo">⚡ <span>Shuriken</span></div>
+      <button onclick="closeDrawer()" aria-label="Tutup">✕</button>
+    </div>
+    <a href="../index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="../installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="../quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="../ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="../ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="../export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="../html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="../monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="../commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="../commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="../commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="../commands/token.html" class="nav-link active" style="padding-left:1.2rem">token</a><a href="../commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="../commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="../commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="../commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="../commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="../case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="../case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="../case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="../case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="../case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="../case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="../case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="../custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="../faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="../configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+  </div>
+</div>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar-logo">⚡ <span>Shuriken</span></div>
+  <a href="../index.html" class="nav-link">🏠 Beranda</a><div class="nav-section">Memulai</div><a href="../installation.html" class="nav-link" style="padding-left:1.2rem">Instalasi</a><a href="../quick-start.html" class="nav-link" style="padding-left:1.2rem">Quick Start</a><div class="nav-section">AI &amp; Provider</div><a href="../ai-providers.html" class="nav-link" style="padding-left:1.2rem">AI Providers</a><a href="../ai-cost-guide.html" class="nav-link" style="padding-left:1.2rem">Panduan Biaya AI</a><div class="nav-section">Export</div><a href="../export-platforms.html" class="nav-link" style="padding-left:1.2rem">Platform Export</a><a href="../html-themes.html" class="nav-link" style="padding-left:1.2rem">HTML Themes</a><div class="nav-section">Monetisasi</div><a href="../monetization.html" class="nav-link" style="padding-left:1.2rem">Panduan Adsterra</a><div class="nav-section">Referensi Command</div><a href="../commands/image-scrape.html" class="nav-link" style="padding-left:1.2rem">image:scrape</a><a href="../commands/image-export.html" class="nav-link" style="padding-left:1.2rem">image:export</a><a href="../commands/clear-data.html" class="nav-link" style="padding-left:1.2rem">clear:data</a><a href="../commands/token.html" class="nav-link active" style="padding-left:1.2rem">token</a><a href="../commands/prompt.html" class="nav-link" style="padding-left:1.2rem">prompt</a><a href="../commands/site.html" class="nav-link" style="padding-left:1.2rem">site</a><a href="../commands/post-publish.html" class="nav-link" style="padding-left:1.2rem">post:publish</a><a href="../commands/site-deploy.html" class="nav-link" style="padding-left:1.2rem">site:deploy</a><a href="../commands/mcp-serve.html" class="nav-link" style="padding-left:1.2rem">mcp:serve</a><div class="nav-section">Case Study</div><a href="../case-study-bisnis-lokal.html" class="nav-link" style="padding-left:1.2rem">Bisnis Lokal (Umroh)</a><a href="../case-study-resep-adsense.html" class="nav-link" style="padding-left:1.2rem">Auto-Blog Resep + AdSense</a><a href="../case-study-affiliate-shopee.html" class="nav-link" style="padding-left:1.2rem">Affiliate Shopee (Indoleads)</a><a href="../case-study-nickname-tier1.html" class="nav-link" style="padding-left:1.2rem">Nickname Tier 1 + Adsterra</a><a href="../case-study-map-of.html" class="nav-link" style="padding-left:1.2rem">Niche &quot;Map Of&quot; Tier 1</a><a href="../case-study-pfp.html" class="nav-link" style="padding-left:1.2rem">Niche PFP Tier 1</a><a href="../case-study-printable.html" class="nav-link" style="padding-left:1.2rem">Printable Worksheets</a><div class="nav-section">Lainnya</div><a href="../custom-templates.html" class="nav-link" style="padding-left:1.2rem">Custom Templates</a><a href="../faq.html" class="nav-link" style="padding-left:1.2rem">FAQ &amp; Tips</a><a href="../configuration.html" class="nav-link" style="padding-left:1.2rem">Konfigurasi</a>
+</aside>
+<main class="content">
+<h1><a id="content-token" href="#content-token" class="heading-permalink" aria-hidden="true" title="Permalink"></a>token</h1>
+<p>Kelola token API untuk semua AI provider — tambah, hapus, lihat daftar, dan test koneksi langsung dari CLI.</p>
+<p>Token disimpan di <code>storage/tokens.json</code> dan otomatis dimuat saat aplikasi berjalan.</p>
+<hr />
+<h2><a id="content-subcommand" href="#content-subcommand" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Subcommand</h2>
+<h3><a id="content-token-list" href="#content-token-list" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>token list</code></h3>
+<p>Tampilkan semua token yang sudah dikonfigurasi (dimask untuk keamanan).</p>
+<pre><code class="language-bash">php shuriken token list
+</code></pre>
+<p>Output contoh:</p>
+<pre><code>AI Token List
+──────────────────────────────────────────────────
+  openai       2 token(s)
+    [0] sk-proj***
+    [1] sk-proj***
+  gemini       1 token(s)
+    [0] AIzaSy***
+  claude       no tokens
+</code></pre>
+<hr />
+<h3><a id="content-token-add" href="#content-token-add" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>token add</code></h3>
+<p>Tambahkan token baru untuk provider tertentu.</p>
+<pre><code class="language-bash">php shuriken token add {provider} {token}
+</code></pre>
+<p>Contoh:</p>
+<pre><code class="language-bash">php shuriken token add openai sk-proj-abc123
+php shuriken token add gemini AIzaSyXXXXXXXX
+php shuriken token add claude sk-ant-XXXXXXXXX
+php shuriken token add deepseek sk-XXXXXXXXX
+</code></pre>
+<p>Beberapa token bisa ditambahkan untuk satu provider — Shuriken akan merotasinya secara round-robin saat scraping.</p>
+<hr />
+<h3><a id="content-token-remove" href="#content-token-remove" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>token remove</code></h3>
+<p>Hapus token dari provider.</p>
+<pre><code class="language-bash">php shuriken token remove {provider} {token}
+</code></pre>
+<p>Contoh:</p>
+<pre><code class="language-bash">php shuriken token remove openai sk-proj-abc123
+</code></pre>
+<hr />
+<h3><a id="content-token-test" href="#content-token-test" class="heading-permalink" aria-hidden="true" title="Permalink"></a><code>token test</code></h3>
+<p>Test koneksi ke provider dengan melakukan API call nyata. Berguna untuk memastikan token valid sebelum mulai scraping.</p>
+<pre><code class="language-bash"># Test token tertentu
+php shuriken token test {provider} {token}
+
+# Test token pertama yang sudah disimpan
+php shuriken token test {provider}
+</code></pre>
+<p>Contoh:</p>
+<pre><code class="language-bash">php shuriken token test openai sk-proj-abc123
+php shuriken token test gemini
+</code></pre>
+<p>Output sukses:</p>
+<pre><code>Testing openai with token sk-proj***...
+✓ Success (342ms): OK
+</code></pre>
+<p>Output gagal:</p>
+<pre><code>Testing openai with token sk-proj***...
+✗ Failed (120ms): Incorrect API key provided
+</code></pre>
+<hr />
+<h2><a id="content-provider-yang-didukung" href="#content-provider-yang-didukung" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Provider yang Didukung</h2>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Nama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OpenAI</td>
+<td><code>openai</code></td>
+</tr>
+<tr>
+<td>Google Gemini</td>
+<td><code>gemini</code></td>
+</tr>
+<tr>
+<td>Anthropic Claude</td>
+<td><code>claude</code></td>
+</tr>
+<tr>
+<td>DeepSeek</td>
+<td><code>deepseek</code></td>
+</tr>
+<tr>
+<td>Groq</td>
+<td><code>groq</code></td>
+</tr>
+<tr>
+<td>OpenRouter</td>
+<td><code>openrouter</code></td>
+</tr>
+<tr>
+<td>Kimi (Moonshot)</td>
+<td><code>kimi</code></td>
+</tr>
+<tr>
+<td>Grok (xAI)</td>
+<td><code>grok</code></td>
+</tr>
+<tr>
+<td>Mistral</td>
+<td><code>mistral</code></td>
+</tr>
+<tr>
+<td>Together AI</td>
+<td><code>together</code></td>
+</tr>
+<tr>
+<td>Perplexity</td>
+<td><code>perplexity</code></td>
+</tr>
+<tr>
+<td>Fireworks AI</td>
+<td><code>fireworks</code></td>
+</tr>
+<tr>
+<td>Cerebras</td>
+<td><code>cerebras</code></td>
+</tr>
+<tr>
+<td>SiliconFlow</td>
+<td><code>siliconflow</code></td>
+</tr>
+<tr>
+<td>Novita AI</td>
+<td><code>novita</code></td>
+</tr>
+</tbody>
+</table>
+<p>Provider lokal (Ollama, LM Studio) dan CLI (claude-cli, gemini-cli) tidak butuh token.</p>
+<hr />
+<h2><a id="content-file-storagetokensjson" href="#content-file-storagetokensjson" class="heading-permalink" aria-hidden="true" title="Permalink"></a>File <code>storage/tokens.json</code></h2>
+<p>Token disimpan dalam format JSON:</p>
+<pre><code class="language-json">{
+  &quot;openai&quot;: [
+    &quot;sk-proj-abc123&quot;,
+    &quot;sk-proj-xyz456&quot;
+  ],
+  &quot;gemini&quot;: [
+    &quot;AIzaSyXXXXXXXX&quot;
+  ]
+}
+</code></pre>
+<p>File ini bisa diedit langsung, atau dikelola via perintah <code>token add/remove</code>.</p>
+<hr />
+<h2><a id="content-prioritas-token" href="#content-prioritas-token" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Prioritas Token</h2>
+<p>Token dari <code>storage/tokens.json</code> <strong>diprioritaskan</strong> di atas nilai default di <code>config/ai.php</code>. Ini memungkinkan konfigurasi token tanpa mengubah file config.</p>
+<hr />
+<h2><a id="content-auto-fallback-provider" href="#content-auto-fallback-provider" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Auto-fallback Provider</h2>
+<p>Kalau satu provider gagal (rate limit, quota habis, error jaringan) setelah beberapa kali retry, Shuriken otomatis mencoba provider berikutnya yang punya token — scraping tidak berhenti.</p>
+<pre><code>  -&gt; GetContentFromGroqAI (Token: sk-gro***)
+  ⚠ Provider groq failed: Rate limit exceeded
+  → Trying next provider...
+  -&gt; GetContentFromGeminiAI (Token: AIzaSy***)
+  ✓ Content generated
+</code></pre>
+<p>Urutan fallback mengikuti prioritas yang sama dengan auto-select. Semakin banyak provider yang dikonfigurasi, semakin tangguh scraping berjalan.</p>
+<pre><code class="language-bash"># Setup multi-provider untuk ketahanan maksimal
+php shuriken token add groq sk-...       # cepat &amp; gratis
+php shuriken token add gemini AIza...    # fallback 1
+php shuriken token add openai sk-...     # fallback 2
+</code></pre>
+<hr />
+<h2><a id="content-auto-select-provider" href="#content-auto-select-provider" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Auto-select Provider</h2>
+<p>Setelah token ditambahkan, <code>--ai</code> otomatis memilih provider yang tersedia — tidak perlu selalu menulis <code>--provider</code>:</p>
+<pre><code class="language-bash">php shuriken token add gemini AIzaSy...
+
+# Provider dipilih otomatis (gemini dalam contoh ini)
+php shuriken image:scrape --ai --keywords=&quot;resep&quot;
+# Output: → No provider specified. Auto-selected: gemini
+</code></pre>
+<p>Urutan prioritas auto-select: <code>openai → gemini → claude → groq → deepseek → openrouter → kimi → grok → mistral → together → perplexity → ollama → lmstudio → claude-cli → gemini-cli</code></p>
+<hr />
+<h2><a id="content-rotasi-token-otomatis" href="#content-rotasi-token-otomatis" class="heading-permalink" aria-hidden="true" title="Permalink"></a>Rotasi Token Otomatis</h2>
+<p>Jika satu provider punya beberapa token, Shuriken akan merotasinya secara round-robin otomatis. Berguna untuk menghindari rate limit.</p>
+<pre><code class="language-bash">php shuriken token add openai sk-token-1
+php shuriken token add openai sk-token-2
+php shuriken token add openai sk-token-3
+
+# Saat scraping, ketiga token dipakai bergantian
+php shuriken image:scrape --ai --provider=openai --keywords=&quot;resep&quot;
+</code></pre>
+
+<div class="subscribe-box">
+  <p class="subscribe-label">📬 Tips & update terbaru dari Internet Marketing Dojo</p>
+  <iframe src="https://imdojo.substack.com/embed" width="480" height="320" style="border:1px solid #EEE;background:white;max-width:100%" frameborder="0" scrolling="no"></iframe>
+</div>
+<div class="footer"><a href="https://dojo.cx/shuriken" target="_blank">Shuriken</a> by <a href="https://imdojo.substack.com" target="_blank">Internet Marketing Dojo</a></div>
+</main>
+</div>
+<script>
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.body.style.overflow='hidden'}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.body.style.overflow=''}
+function handleDrawerClick(e){if(e.target.classList.contains('drawer-backdrop'))closeDrawer()}
+document.querySelectorAll('#drawer .nav-link').forEach(function(a){a.addEventListener('click',closeDrawer)})
+</script>
+<script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="08b4d506-ee5f-49d8-ab6a-b3d3196bc5c0";window.$crisp.push(["config","position:reverse",[false]]);(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>
+</body>
+</html>
